@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" name="viewport" />
+    <title>Crear Cuenta - B&D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #f5f5f5 0%, #efefef 100%);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .gradient-brand { background: linear-gradient(135deg, #f15a29 0%, #d94e1f 100%); }
+        
+        .input-field { transition: all 0.3s ease; }
+        .input-field:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(241, 90, 41, 0.15);
+        }
+
+        .btn-register { position: relative; overflow: hidden; }
+        .btn-register::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+        .btn-register:active::before { left: 100%; }
+
+        .checkbox-custom {
+            appearance: none; -webkit-appearance: none;
+            width: 20px; height: 20px;
+            border: 2px solid #f15a29; border-radius: 4px;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .checkbox-custom:checked {
+            background: linear-gradient(135deg, #f15a29, #d94e1f);
+            border-color: #f15a29;
+        }
+        .checkbox-custom:checked::after {
+            content: '✓'; display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: bold;
+        }
+
+        .divider-line { background: linear-gradient(90deg, transparent, #f15a29, transparent); }
+
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak { width: 33%; background: #ef4444; }
+        .strength-medium { width: 66%; background: #f59e0b; }
+        .strength-strong { width: 100%; background: #10b981; }
+    </style>
+</head>
+<body>
+    
+    <div class="min-h-screen flex items-center justify-center px-4 py-8">
+        <div class="w-full max-w-2xl">
+            <div class="bg-white p-8 lg:p-12 rounded-2xl shadow-2xl">
+                <!-- Decoración superior -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl gradient-brand mb-4">
+                        <i class="fas fa-user-plus text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl lg:text-4xl font-black text-gray-900 mb-2">
+                        Crear cuenta
+                    </h2>
+                    <p class="text-gray-600 text-base font-medium">
+                        Completa el formulario para registrarte
+                    </p>
+                </div>
+
+                <!-- Formulario -->
+                <form class="space-y-5 mb-8" onsubmit="handleRegister(event)">
+                    
+                    <!-- Nombre completo en grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 mb-2">
+                                Nombre
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                                <input 
+                                    type="text" 
+                                    id="firstName"
+                                    placeholder="Juan"
+                                    class="input-field w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 bg-gray-50 focus:bg-white transition duration-300 text-sm"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 mb-2">
+                                Apellido
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                                <input 
+                                    type="text" 
+                                    id="lastName"
+                                    placeholder="Pérez"
+                                    class="input-field w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 bg-gray-50 focus:bg-white transition duration-300 text-sm"
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">
+                            Correo electrónico
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input 
+                                type="email" 
+                                id="email"
+                                placeholder="nombre@ejemplo.com"
+                                class="input-field w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 bg-gray-50 focus:bg-white transition duration-300 text-sm"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">
+                            Teléfono
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-phone absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input 
+                                type="tel" 
+                                id="phone"
+                                placeholder="+52 123 456 7890"
+                                class="input-field w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 bg-gray-50 focus:bg-white transition duration-300 text-sm"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Contraseñas en grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 mb-2">
+                                Contraseña
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                                <input 
+                                    type="password" 
+                                    id="password"
+                                    placeholder="- - - - - - - - "
+                                    class="input-field w-full pl-11 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 bg-gray-50 focus:bg-white transition duration-300 text-sm"
+                                    oninput="checkPasswordStrength()"
+                                    required
+                                >
+                                <button 
+                                    type="button"
+                                    onclick="togglePassword('password')"
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                                >
+                                    <i id="eyeIcon1" class="fas fa-eye text-sm"></i>
+                                </button>
+                            </div>
+                            <!-- Indicador de fortaleza -->
+                            <div class="mt-2 bg-gray-200 rounded-full h-1 overflow-hidden">
+                                <div id="strengthBar" class="password-strength"></div>
+                            </div>
+                            <p id="strengthText" class="text-xs text-gray-500 mt-1 font-medium"></p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-800 mb-2">
+                                Confirmar contraseña
+                            </label>
+                            <div class="relative">
+                                <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                                <input 
+                                    type="password" 
+                                    id="confirmPassword"
+                                    placeholder="- - - - - - - - "
+                                    class="input-field w-full pl-11 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 bg-gray-50 focus:bg-white transition duration-300 text-sm"
+                                    oninput="checkPasswordMatch()"
+                                    required
+                                >
+                                <button 
+                                    type="button"
+                                    onclick="togglePassword('confirmPassword')"
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                                >
+                                    <i id="eyeIcon2" class="fas fa-eye text-sm"></i>
+                                </button>
+                            </div>
+                            <p id="matchText" class="text-xs mt-1 font-medium"></p>
+                        </div>
+                    </div>
+
+                    <!-- Términos y condiciones -->
+                    <div class="bg-gray-50 border-2 border-gray-200 rounded-xl p-4">
+                        <label class="flex items-start gap-3 cursor-pointer group">
+                            <input 
+                                type="checkbox" 
+                                id="termsCheckbox"
+                                class="checkbox-custom mt-0.5"
+                                required
+                            >
+                            <span class="text-sm text-gray-700 font-medium leading-relaxed">
+                                Acepto los 
+                                <a href="#" class="text-orange-500 hover:text-orange-600 font-bold transition">términos y condiciones</a> 
+                                y la 
+                                <a href="#" class="text-orange-500 hover:text-orange-600 font-bold transition">política de privacidad</a>
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Botón Principal -->
+                    <button 
+                        type="submit"
+                        class="btn-register w-full gradient-brand text-white font-bold py-3 rounded-xl text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 relative mt-8"
+                    >
+                        <span class="relative z-10 flex items-center justify-center gap-2">
+                            <i class="fas fa-user-plus"></i>
+                            Crear mi cuenta
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Divisor -->
+                <div class="flex items-center gap-3 my-8">
+                    <div class="divider-line flex-1 h-px"></div>
+                    <span class="text-xs text-gray-500 font-medium">¿Ya tienes cuenta?</span>
+                    <div class="divider-line flex-1 h-px"></div>
+                </div>
+
+                <!-- Botón de login -->
+                <a 
+                    href="login.html" 
+                    class="w-full inline-flex items-center justify-center gap-2 py-3 border-2 border-gray-200 rounded-xl text-sm font-semibold text-gray-700 hover:text-orange-600 hover:border-orange-300 hover:bg-orange-50 transition duration-300"
+                >
+                    <i class="fas fa-sign-in-alt"></i>
+                    Iniciar sesión
+                </a>
+
+                <!-- Texto de soporte -->
+                <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-4 my-6">
+                    <p class="text-xs text-gray-700 font-medium">
+                        <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
+                        Tus datos están protegidos con encriptación de nivel bancario
+                    </p>
+                </div>
+
+                <!-- Pie de página -->
+                <div class="text-center text-xs text-gray-500">
+                    <p class="font-medium">
+                        v2.0 | © 2025 Corporación B&D
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const eyeIcon = fieldId === 'password' ? document.getElementById('eyeIcon1') : document.getElementById('eyeIcon2');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            strengthBar.className = 'password-strength';
+            
+            if (password.length === 0) {
+                strengthBar.classList.remove('strength-weak', 'strength-medium', 'strength-strong');
+                strengthText.textContent = '';
+            } else if (strength <= 2) {
+                strengthBar.classList.add('strength-weak');
+                strengthText.textContent = 'Contraseña débil';
+                strengthText.className = 'text-xs text-red-500 mt-1 font-medium';
+            } else if (strength === 3) {
+                strengthBar.classList.add('strength-medium');
+                strengthText.textContent = 'Contraseña media';
+                strengthText.className = 'text-xs text-yellow-500 mt-1 font-medium';
+            } else {
+                strengthBar.classList.add('strength-strong');
+                strengthText.textContent = 'Contraseña fuerte';
+                strengthText.className = 'text-xs text-green-500 mt-1 font-medium';
+            }
+        }
+
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const matchText = document.getElementById('matchText');
+
+            if (confirmPassword.length === 0) {
+                matchText.textContent = '';
+                return;
+            }
+
+            if (password === confirmPassword) {
+                matchText.textContent = '✓ Las contraseñas coinciden';
+                matchText.className = 'text-xs text-green-500 mt-1 font-medium';
+            } else {
+                matchText.textContent = '✗ Las contraseñas no coinciden';
+                matchText.className = 'text-xs text-red-500 mt-1 font-medium';
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                password: password
+            };
+            
+            console.log('Register:', formData);
+            
+            // Aquí va tu lógica de registro
+            // window.location.href = 'login.html';
+        }
+
+        // Animación de foco en inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('ring-2', 'ring-orange-200');
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('ring-2', 'ring-orange-200');
+            });
+        });
+    </script>
+
+</body>
+</html>
+

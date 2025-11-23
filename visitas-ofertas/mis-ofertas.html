@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Mis Ofertas - Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { min-height: 100vh; overscroll-behavior: none; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        .dark .glass { background: rgba(42, 42, 40, 0.95); }
+    </style>
+</head>
+
+<body class="font-display bg-gray-50 dark:bg-gray-900">
+    
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50 h-16">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Mis Ofertas</h1>
+        </div>
+    </header>
+    
+    <div class="pt-20 pb-6 px-4">
+        
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6">
+            <button onclick="showTab('active')" id="activeTab" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold">
+                Activas (2)
+            </button>
+            <button onclick="showTab('history')" id="historyTab" class="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-semibold">
+                Historial (5)
+            </button>
+        </div>
+        
+        <!-- Active Offers -->
+        <div id="activeOffers" class="space-y-4">
+            
+            <!-- Pending Offer -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md">
+                <div class="h-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80');"></div>
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-xl font-bold mb-1">123 Maple Street</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">San Francisco, CA</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 text-xs font-bold">Pendiente</span>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Tu oferta:</span>
+                            <span class="text-gray-900 dark:text-gray-100 font-bold">$700,000</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Precio de lista:</span>
+                            <span class="text-gray-600 dark:text-gray-400">$750,000</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Enviada:</span>
+                            <span class="text-gray-600 dark:text-gray-400">Hace 2 días</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="viewOffer()" class="flex-1 h-11 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-200 transition-all">
+                            Ver Detalles
+                        </button>
+                        <button onclick="withdrawOffer()" class="flex-1 h-11 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-bold hover:bg-red-100 transition-all">
+                            Retirar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Counter Offer -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md border-2 border-primary">
+                <div class="h-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80');"></div>
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-xl font-bold mb-1">456 Oak Avenue</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Oakland, CA</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Contraoferta</span>
+                    </div>
+                    
+                    <div class="p-3 rounded-xl bg-primary/5 mb-3">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold mb-2">El vendedor ha hecho una contraoferta</p>
+                        <div class="space-y-1 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Tu oferta:</span>
+                                <span class="text-gray-600 dark:text-gray-400">$620,000</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Contraoferta:</span>
+                                <span class="text-primary font-bold">$640,000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="acceptCounter()" class="flex-1 h-11 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold shadow-md hover:scale-105 transition-all">
+                            Aceptar
+                        </button>
+                        <button onclick="rejectCounter()" class="flex-1 h-11 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-200 transition-all">
+                            Rechazar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Offer History (Hidden by default) -->
+        <div id="historyOffers" class="hidden space-y-4">
+            
+            <!-- Accepted Offer -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md opacity-90">
+                <div class="h-32 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80');"></div>
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-1">789 Pine Road</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Berkeley, CA</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-green-500/10 text-green-600 text-xs font-bold">Aceptada</span>
+                    </div>
+                    
+                    <div class="flex justify-between text-sm mb-3">
+                        <span class="text-gray-500">Oferta final:</span>
+                        <span class="text-gray-900 dark:text-gray-100 font-bold">$890,000</span>
+                    </div>
+                    
+                    <button onclick="viewOffer()" class="w-full h-10 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-200 transition-all">
+                        Ver Detalles
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Rejected Offer -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md opacity-75">
+                <div class="h-32 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80');"></div>
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-1">321 Elm Street</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Palo Alto, CA</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-red-500/10 text-red-600 text-xs font-bold">Rechazada</span>
+                    </div>
+                    
+                    <div class="flex justify-between text-sm mb-3">
+                        <span class="text-gray-500">Tu oferta:</span>
+                        <span class="text-gray-600 dark:text-gray-400">$1,200,000</span>
+                    </div>
+                    
+                    <button onclick="viewOffer()" class="w-full h-10 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-200 transition-all">
+                        Ver Detalles
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    <script>
+        function goBack() { window.history.back(); }
+        function viewOffer() { alert('Ver detalles de la oferta'); }
+        function withdrawOffer() { if(confirm('¿Retirar esta oferta?')) alert('Oferta retirada'); }
+        function acceptCounter() { if(confirm('¿Aceptar contraoferta de $640,000?')) alert('Contraoferta aceptada'); }
+        function rejectCounter() { if(confirm('¿Rechazar contraoferta?')) alert('Contraoferta rechazada'); }
+        
+        function showTab(tab) {
+            const activeTab = document.getElementById('activeTab');
+            const historyTab = document.getElementById('historyTab');
+            const activeOffers = document.getElementById('activeOffers');
+            const historyOffers = document.getElementById('historyOffers');
+            
+            if (tab === 'active') {
+                activeTab.className = 'flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold';
+                historyTab.className = 'flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-semibold';
+                activeOffers.classList.remove('hidden');
+                historyOffers.classList.add('hidden');
+            } else {
+                historyTab.className = 'flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold';
+                activeTab.className = 'flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-semibold';
+                historyOffers.classList.remove('hidden');
+                activeOffers.classList.add('hidden');
+            }
+        }
+    </script>
+    
+</body>
+</html>

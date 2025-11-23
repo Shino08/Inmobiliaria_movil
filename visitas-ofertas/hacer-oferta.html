@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Hacer Oferta - Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { min-height: 100vh; overscroll-behavior: none; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        .dark .glass { background: rgba(42, 42, 40, 0.95); }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #EA5B2B;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #EA5B2B;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+
+<body class="font-display bg-gray-50 dark:bg-gray-900">
+    
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50 h-16">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Hacer Oferta</h1>
+        </div>
+    </header>
+    
+    <div class="pt-20 pb-24 px-4 space-y-6">
+        
+        <!-- Property Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md">
+            <div class="h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80');"></div>
+            <div class="p-4">
+                <p class="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-1">$750,000</p>
+                <p class="text-gray-600 dark:text-gray-400 text-base font-semibold mb-1">123 Maple Street</p>
+                <p class="text-gray-500 text-sm">San Francisco, CA</p>
+            </div>
+        </div>
+        
+        <!-- Offer Amount -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md">
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-4">Monto de la oferta</h2>
+            
+            <div class="mb-6">
+                <div class="flex items-baseline gap-2 mb-2">
+                    <span class="text-gray-500 text-sm">$</span>
+                    <input 
+                        type="text" 
+                        id="offerAmount" 
+                        value="700,000" 
+                        class="flex-1 text-gray-900 dark:text-gray-100 text-4xl font-bold bg-transparent focus:outline-none"
+                        oninput="updateSlider()"
+                    />
+                </div>
+                <input 
+                    type="range" 
+                    id="offerSlider" 
+                    min="500000" 
+                    max="900000" 
+                    value="700000" 
+                    step="5000"
+                    class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                    oninput="updateAmount()"
+                />
+                <div class="flex justify-between text-gray-500 text-xs mt-2">
+                    <span>$500,000</span>
+                    <span>$900,000</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-900">
+                <div>
+                    <p class="text-gray-500 text-sm">Precio de lista</p>
+                    <p class="text-gray-900 dark:text-gray-100 text-lg font-bold">$750,000</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-gray-500 text-sm">Diferencia</p>
+                    <p id="difference" class="text-red-600 text-lg font-bold">-$50,000</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Financing -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md">
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-4">Financiamiento</h2>
+            
+            <div class="space-y-3">
+                <label class="flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary transition-colors">
+                    <input type="radio" name="financing" value="cash" class="h-5 w-5 text-primary" />
+                    <div class="flex-1">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Pago en efectivo</p>
+                        <p class="text-gray-500 text-xs">Sin financiamiento</p>
+                    </div>
+                </label>
+                
+                <label class="flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary transition-colors">
+                    <input type="radio" name="financing" value="mortgage" class="h-5 w-5 text-primary" checked />
+                    <div class="flex-1">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Hipoteca</p>
+                        <p class="text-gray-500 text-xs">Con financiamiento bancario</p>
+                    </div>
+                </label>
+            </div>
+            
+            <div id="mortgageDetails" class="mt-4 space-y-3">
+                <div>
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2 block">Enganche (%)</label>
+                    <input type="number" value="20" class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                
+                <div>
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2 block">Plazo (años)</label>
+                    <select class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option>15 años</option>
+                        <option selected>20 años</option>
+                        <option>30 años</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contingencies -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md">
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-4">Contingencias</h2>
+            
+            <div class="space-y-3">
+                <label class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-900">
+                    <div>
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Inspección de la propiedad</p>
+                        <p class="text-gray-500 text-xs">Sujeto a inspección satisfactoria</p>
+                    </div>
+                    <input type="checkbox" checked class="h-5 w-5 rounded text-primary" />
+                </label>
+                
+                <label class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-900">
+                    <div>
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Aprobación de financiamiento</p>
+                        <p class="text-gray-500 text-xs">Sujeto a aprobación bancaria</p>
+                    </div>
+                    <input type="checkbox" checked class="h-5 w-5 rounded text-primary" />
+                </label>
+                
+                <label class="flex items-center justify-between p-4 rounded-xl bg-gray-50 dark:bg-gray-900">
+                    <div>
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Venta de propiedad actual</p>
+                        <p class="text-gray-500 text-xs">Sujeto a venta de mi propiedad</p>
+                    </div>
+                    <input type="checkbox" class="h-5 w-5 rounded text-primary" />
+                </label>
+            </div>
+        </div>
+        
+        <!-- Additional Terms -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md">
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-4">Términos adicionales</h2>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2 block">Fecha de cierre propuesta</label>
+                    <input type="date" class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                
+                <div>
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2 block">Comentarios adicionales (opcional)</label>
+                    <textarea rows="3" placeholder="Cualquier término o condición adicional..." class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Bottom CTA -->
+    <div class="fixed bottom-0 left-0 right-0 p-4 glass border-t border-gray-200/50 dark:border-gray-700/50 z-50">
+        <button onclick="submitOffer()" class="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-primary-dark text-white text-base font-bold shadow-lg hover:scale-105 active:scale-95 transition-all">
+            Enviar Oferta
+        </button>
+    </div>
+    
+    <script>
+        function goBack() { window.history.back(); }
+        
+        function updateAmount() {
+            const slider = document.getElementById('offerSlider');
+            const input = document.getElementById('offerAmount');
+            const value = parseInt(slider.value);
+            input.value = value.toLocaleString();
+            updateDifference(value);
+        }
+        
+        function updateSlider() {
+            const input = document.getElementById('offerAmount');
+            const slider = document.getElementById('offerSlider');
+            const value = parseInt(input.value.replace(/,/g, ''));
+            if (!isNaN(value)) {
+                slider.value = value;
+                updateDifference(value);
+            }
+        }
+        
+        function updateDifference(offerValue) {
+            const listPrice = 750000;
+            const diff = offerValue - listPrice;
+            const diffElement = document.getElementById('difference');
+            diffElement.textContent = (diff >= 0 ? '+' : '') + '$' + Math.abs(diff).toLocaleString();
+            diffElement.className = diff >= 0 ? 'text-green-600 text-lg font-bold' : 'text-red-600 text-lg font-bold';
+        }
+        
+        function submitOffer() {
+            const amount = document.getElementById('offerAmount').value;
+            if (confirm(`¿Confirmar oferta de $${amount}?`)) {
+                alert('Oferta enviada exitosamente');
+                window.history.back();
+            }
+        }
+    </script>
+    
+</body>
+</html>

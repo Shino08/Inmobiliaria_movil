@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Centro de Ayuda - B&D</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Centro de Ayuda</h1>
+        </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="pt-20 pb-6 px-4 max-w-2xl mx-auto space-y-6">
+        
+        <!-- Buscador -->
+        <div class="relative">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+            <input 
+                type="text" 
+                placeholder="Buscar en ayuda..."
+                class="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-primary text-gray-900 dark:text-gray-100"
+            />
+        </div>
+
+        <!-- Accesos rápidos -->
+        <div class="grid grid-cols-2 gap-3">
+            <button onclick="contactSupport()" class="flex flex-col items-center gap-2 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:scale-105 transition-transform">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <span class="material-symbols-outlined">support_agent</span>
+                </div>
+                <p class="text-gray-900 dark:text-gray-100 text-sm font-bold text-center">Chat en vivo</p>
+            </button>
+
+            <button onclick="callSupport()" class="flex flex-col items-center gap-2 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:scale-105 transition-transform">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
+                    <span class="material-symbols-outlined">call</span>
+                </div>
+                <p class="text-gray-900 dark:text-gray-100 text-sm font-bold text-center">Llamar</p>
+            </button>
+
+            <button onclick="emailSupport()" class="flex flex-col items-center gap-2 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:scale-105 transition-transform">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                    <span class="material-symbols-outlined">email</span>
+                </div>
+                <p class="text-gray-900 dark:text-gray-100 text-sm font-bold text-center">Email</p>
+            </button>
+
+            <button onclick="viewTutorials()" class="flex flex-col items-center gap-2 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:scale-105 transition-transform">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
+                    <span class="material-symbols-outlined">play_circle</span>
+                </div>
+                <p class="text-gray-900 dark:text-gray-100 text-sm font-bold text-center">Tutoriales</p>
+            </button>
+        </div>
+
+        <!-- Preguntas frecuentes -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">Preguntas Frecuentes</h3>
+            </div>
+
+            <div class="divide-y divide-gray-100 dark:divide-gray-700">
+                <button onclick="toggleFAQ(1)" class="w-full text-left px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold mb-1">¿Cómo puedo agendar una visita?</p>
+                            <p id="faq1" class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed hidden">
+                                Selecciona la propiedad de tu interés, toca "Agendar visita" y elige fecha y hora disponibles.
+                            </p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400 flex-shrink-0" id="icon1">expand_more</span>
+                    </div>
+                </button>
+
+                <button onclick="toggleFAQ(2)" class="w-full text-left px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold mb-1">¿Puedo guardar mis propiedades favoritas?</p>
+                            <p id="faq2" class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed hidden">
+                                Sí, toca el ícono de corazón en cualquier propiedad para agregarla a favoritos.
+                            </p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400 flex-shrink-0" id="icon2">expand_more</span>
+                    </div>
+                </button>
+
+                <button onclick="toggleFAQ(3)" class="w-full text-left px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold mb-1">¿Cómo funciona el filtro de búsqueda?</p>
+                            <p id="faq3" class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed hidden">
+                                Usa los filtros para especificar precio, ubicación, habitaciones y más características deseadas.
+                            </p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400 flex-shrink-0" id="icon3">expand_more</span>
+                    </div>
+                </button>
+
+                <button onclick="toggleFAQ(4)" class="w-full text-left px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold mb-1">¿Cuánto tiempo toma una inversión?</p>
+                            <p id="faq4" class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed hidden">
+                                El plazo varía según el proyecto, generalmente entre 12 y 24 meses.
+                            </p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400 flex-shrink-0" id="icon4">expand_more</span>
+                    </div>
+                </button>
+
+                <button onclick="toggleFAQ(5)" class="w-full text-left px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold mb-1">¿Cómo actualizo mi información?</p>
+                            <p id="faq5" class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed hidden">
+                                Ve a tu perfil, toca "Editar perfil" y actualiza tus datos personales.
+                            </p>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-400 flex-shrink-0" id="icon5">expand_more</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Recursos adicionales -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">Recursos Adicionales</h3>
+            </div>
+
+            <button onclick="viewGuides()" class="w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-primary">menu_book</span>
+                <p class="flex-1 text-left text-gray-900 dark:text-gray-100 text-sm font-semibold">Guías completas</p>
+                <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+            </button>
+
+            <button onclick="viewTerms()" class="w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700">
+                <span class="material-symbols-outlined text-primary">description</span>
+                <p class="flex-1 text-left text-gray-900 dark:text-gray-100 text-sm font-semibold">Términos y condiciones</p>
+                <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+            </button>
+
+            <button onclick="viewPrivacy()" class="w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700">
+                <span class="material-symbols-outlined text-primary">privacy_tip</span>
+                <p class="flex-1 text-left text-gray-900 dark:text-gray-100 text-sm font-semibold">Política de privacidad</p>
+                <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function toggleFAQ(num) {
+            const faq = document.getElementById(`faq${num}`);
+            const icon = document.getElementById(`icon${num}`);
+            
+            faq.classList.toggle('hidden');
+            icon.textContent = faq.classList.contains('hidden') ? 'expand_more' : 'expand_less';
+        }
+
+        function contactSupport() {
+            showToast('Conectando con soporte...');
+        }
+
+        function callSupport() {
+            showToast('Llamando al soporte...');
+        }
+
+        function emailSupport() {
+            showToast('Abriendo correo...');
+        }
+
+        function viewTutorials() {
+            showToast('Cargando tutoriales...');
+        }
+
+        function viewGuides() {
+            showToast('Cargando guías...');
+        }
+
+        function viewTerms() {
+            showToast('Cargando términos...');
+        }
+
+        function viewPrivacy() {
+            showToast('Cargando política...');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);   
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+

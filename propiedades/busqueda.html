@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Buscar Propiedades - B&D</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        .dark .glass { background: rgba(42, 42, 40, 0.95); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fadeIn 0.3s ease; }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="flex h-10 w-10 items-center justify-center rounded-xl hover:bg-gray-100 transition-colors">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <div class="flex-1 relative">
+                <div class="flex items-center rounded-xl bg-gray-100 dark:bg-gray-800 h-10 px-3 gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">search</span>
+                    <input 
+                        id="searchInput" 
+                        type="text" 
+                        class="flex-1 bg-transparent text-gray-900 dark:text-gray-100 text-sm font-medium placeholder:text-gray-400 focus:outline-none border-none p-0" 
+                        placeholder="Buscar por ubicación, tipo..." 
+                        oninput="handleSearch()"
+                    />
+                    <button onclick="clearSearch()" id="clearSearchBtn" class="hidden flex h-7 w-7 items-center justify-center rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 text-sm">close</span>
+                    </button>
+                </div>
+            </div>
+            <button onclick="goToFilters()" class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">tune</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Filtros rápidos -->
+    <div class="fixed top-16 left-0 right-0 z-40 px-4 pt-2 pb-3 glass border-b border-gray-200/50">
+        <div class="flex gap-2 overflow-x-auto no-scrollbar">
+            <button onclick="filterPrice('all')" class="filter-btn px-4 py-2 rounded-full bg-primary text-white text-xs font-bold shadow-md whitespace-nowrap" data-filter="all">
+                Todos
+            </button>
+            <button onclick="filterPrice('low')" class="filter-btn px-4 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold whitespace-nowrap" data-filter="low">
+                < $500k
+            </button>
+            <button onclick="filterPrice('mid')" class="filter-btn px-4 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold whitespace-nowrap" data-filter="mid">
+                $500k - $1M
+            </button>
+            <button onclick="filterPrice('high')" class="filter-btn px-4 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold whitespace-nowrap" data-filter="high">
+                > $1M
+            </button>
+        </div>
+    </div>
+
+    <!-- Resultados -->
+    <main class="pt-32 pb-20 px-4">
+        <div class="mb-4">
+            <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                <span id="resultCount">7</span> propiedades encontradas
+            </p>
+        </div>
+
+        <div id="resultsGrid" class="grid grid-cols-1 gap-4">
+            <!-- Las propiedades se cargan dinámicamente -->
+        </div>
+
+        <!-- Estado vacío -->
+        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20">
+            <div class="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-gray-400 text-5xl">search_off</span>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 text-base font-semibold mb-1">No se encontraron resultados</p>
+            <p class="text-gray-500 text-sm">Intenta con otros filtros o términos de búsqueda</p>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-2 glass border-t border-gray-200/50 h-16">
+        <a href="map-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:text-primary transition-all">
+            <span class="material-symbols-outlined text-lg">map</span>
+            <span class="text-xs font-medium">Mapa</span>
+        </a>
+        <a href="search-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-primary">
+            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">search</span>
+            <span class="text-xs font-bold">Buscar</span>
+        </a>
+        <a href="favorites-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:text-primary transition-all">
+            <span class="material-symbols-outlined text-lg">favorite_border</span>
+            <span class="text-xs font-medium">Favoritos</span>
+        </a>
+        <button onclick="contactAgent()" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:text-primary transition-all">
+            <span class="material-symbols-outlined text-lg">support_agent</span>
+            <span class="text-xs font-medium">Contacto</span>
+        </button>
+        <a href="profile-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:text-primary transition-all">
+            <span class="material-symbols-outlined text-lg">person</span>
+            <span class="text-xs font-medium">Perfil</span>
+        </a>
+    </nav>
+
+    <script>
+        const properties = [
+            { id: 1, price: 750000, address: '123 Maple St', location: 'San Francisco, CA', beds: 3, baths: 2, sqft: 2150, type: 'house', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
+            { id: 2, price: 450000, address: '456 Oak Ave', location: 'Oakland, CA', beds: 2, baths: 1.5, sqft: 1650, type: 'apartment', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80' },
+            { id: 3, price: 1200000, address: '789 Pine Rd', location: 'Berkeley, CA', beds: 4, baths: 3, sqft: 3200, type: 'villa', image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80' },
+            { id: 4, price: 680000, address: '321 Elm Blvd', location: 'San Jose, CA', beds: 3, baths: 2.5, sqft: 2400, type: 'house', image: 'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&q=80' },
+            { id: 5, price: 550000, address: '654 Cedar Ln', location: 'Palo Alto, CA', beds: 2, baths: 2, sqft: 1800, type: 'apartment', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80' },
+            { id: 6, price: 920000, address: '987 Birch Ave', location: 'Mountain View, CA', beds: 3, baths: 3, sqft: 2800, type: 'villa', image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80' },
+            { id: 7, price: 410000, address: '159 Spruce Dr', location: 'Fremont, CA', beds: 2, baths: 1, sqft: 1450, type: 'apartment', image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80' }
+        ];
+
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+        function renderProperties(filter = 'all', query = '') {
+            const grid = document.getElementById('resultsGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            let filtered = properties;
+            
+            // Filtrar por precio
+            if (filter === 'low') filtered = filtered.filter(p => p.price < 500000);
+            else if (filter === 'mid') filtered = filtered.filter(p => p.price >= 500000 && p.price < 1000000);
+            else if (filter === 'high') filtered = filtered.filter(p => p.price >= 1000000);
+
+            // Filtrar por búsqueda
+            if (query) {
+                filtered = filtered.filter(p => 
+                    p.address.toLowerCase().includes(query.toLowerCase()) ||
+                    p.location.toLowerCase().includes(query.toLowerCase()) ||
+                    p.type.toLowerCase().includes(query.toLowerCase())
+                );
+            }
+
+            document.getElementById('resultCount').textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            grid.innerHTML = filtered.map(prop => `
+                <div class="animate-fade-in">
+                    <a href="details-page.html?id=${prop.id}" class="flex gap-4 p-3 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
+                        <div class="relative w-32 h-32 shrink-0 rounded-xl bg-cover bg-center" style="background-image: url('${prop.image}');">
+                            <button onclick="toggleFavorite(${prop.id}, event)" class="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full glass shadow-md hover:scale-110 transition-all">
+                                <span class="material-symbols-outlined text-sm ${favorites.includes(prop.id) ? 'text-primary' : 'text-gray-700'}" style="font-variation-settings: 'FILL' ${favorites.includes(prop.id) ? 1 : 0};">favorite</span>
+                            </button>
+                        </div>
+
+                        <div class="flex-1 flex flex-col justify-between min-w-0">
+                            <div>
+                                <p class="text-gray-900 dark:text-gray-100 text-xl font-bold mb-1">$${prop.price.toLocaleString()}</p>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1 truncate">${prop.address}</p>
+                                <p class="text-gray-500 text-xs">${prop.location}</p>
+                            </div>
+
+                            <div class="flex items-center gap-3 text-gray-600">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">bed</span>
+                                    <span class="text-xs font-bold">${prop.beds}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">bathtub</span>
+                                    <span class="text-xs font-bold">${prop.baths}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">square_foot</span>
+                                    <span class="text-xs font-bold">${prop.sqft}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function filterPrice(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.filter === filter) {
+                    btn.classList.remove('bg-white', 'dark:bg-gray-800', 'border', 'border-gray-200', 'dark:border-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                    btn.classList.add('bg-primary', 'text-white');
+                } else {
+                    btn.classList.remove('bg-primary', 'text-white');
+                    btn.classList.add('bg-white', 'dark:bg-gray-800', 'border', 'border-gray-200', 'dark:border-gray-700', 'text-gray-700', 'dark:text-gray-300');
+                }
+            });
+
+            renderProperties(filter, searchQuery);
+        }
+
+        function handleSearch() {
+            const input = document.getElementById('searchInput');
+            searchQuery = input.value;
+            
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (searchQuery.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            renderProperties(currentFilter, searchQuery);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            searchQuery = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            renderProperties(currentFilter, '');
+        }
+
+        function toggleFavorite(id, event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const index = favorites.indexOf(id);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                showToast('Eliminado de favoritos');
+            } else {
+                favorites.push(id);
+                showToast('Agregado a favoritos ❤️');
+            }
+
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            renderProperties(currentFilter, searchQuery);
+        }
+
+        function goToFilters() {
+            window.location.href = 'filters-page.html';
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function contactAgent() {
+            showToast('Conectando con agente...');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+
+            // Cargar filtros aplicados
+            const appliedFilters = localStorage.getItem('appliedFilters');
+            if (appliedFilters) {
+                const filters = JSON.parse(appliedFilters);
+                console.log('Filtros aplicados:', filters);
+                // Aquí puedes aplicar los filtros guardados
+            }
+
+            renderProperties();
+        });
+    </script>
+
+</body>
+</html>

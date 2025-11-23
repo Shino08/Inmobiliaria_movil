@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Mapa - Propiedades</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            overscroll-behavior: none;
+            font-family: 'Inter', sans-serif;
+            background: #FFFFFF;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+        }
+        .dark .glass { background: rgba(42, 42, 40, 0.95); }
+        
+        .bottom-sheet {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, height;
+            touch-action: none;
+        }
+        .bottom-sheet.dragging { transition: none; }
+        .bottom-sheet.hidden-state { transform: translateY(calc(100% - 60px)) !important; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fadeIn 0.3s ease; }
+        
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-gray-900">
+
+    <!-- Header fijo -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 glass border-b border-gray-200/50 h-14">
+        <div class="flex items-center gap-2">
+            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-dark text-white shadow-md">
+                <span class="material-symbols-outlined text-lg">home</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-gray-900 dark:text-gray-100 text-lg font-bold leading-none">B&D</span>
+                <span class="text-gray-500 dark:text-gray-400 text-[10px] font-medium">Propiedades</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button onclick="goToFavorites()" class="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition-all">
+                <span class="material-symbols-outlined text-lg">favorite</span>
+                <span id="favCount" class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white text-[10px] font-bold shadow-lg">0</span>
+            </button>
+
+            <button onclick="toggleDarkMode()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition-all">
+                <span class="material-symbols-outlined text-lg dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined text-lg hidden dark:inline">light_mode</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Barra de búsqueda -->
+    <div class="fixed top-14 left-0 right-0 z-40 px-4 pt-2 pb-2">
+        <div class="flex items-center gap-3 mb-2">
+            <div class="flex-1 relative">
+                <div class="flex items-center rounded-2xl glass shadow-lg h-12 pl-4 pr-3 gap-2">
+                    <span class="material-symbols-outlined text-primary text-xl">search</span>
+                    <input id="searchInput" class="flex-1 bg-transparent text-gray-900 text-sm font-medium placeholder:text-gray-400 focus:outline-none border-none p-0" placeholder="Buscar ubicación..." />
+                    <button onclick="clearSearch()" id="clearSearchBtn" class="hidden flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
+                        <span class="material-symbols-outlined text-gray-600 text-lg">close</span>
+                    </button>
+                </div>
+            </div>
+            <button onclick="toggleFilters()" class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl glass shadow-lg transition-all">
+                <span class="material-symbols-outlined text-xl">tune</span>
+            </button>
+        </div>
+
+        <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+            <button onclick="filterByType('house')" class="filter-chip flex items-center gap-2 px-4 py-2 rounded-full glass text-xs font-bold shadow-md whitespace-nowrap transition-all" data-type="house">
+                <span class="material-symbols-outlined text-base">home</span>
+                <span>Casas</span>
+            </button>
+            <button onclick="filterByType('apartment')" class="filter-chip flex items-center gap-2 px-4 py-2 rounded-full glass text-xs font-bold shadow-md whitespace-nowrap transition-all" data-type="apartment">
+                <span class="material-symbols-outlined text-base">apartment</span>
+                <span>Apartamentos</span>
+            </button>
+            <button onclick="filterByType('villa')" class="filter-chip flex items-center gap-2 px-4 py-2 rounded-full glass text-xs font-bold shadow-md whitespace-nowrap transition-all" data-type="villa">
+                <span class="material-symbols-outlined text-base">villa</span>
+                <span>Villas</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mapa -->
+    <div class="flex-1 relative pt-28 h-screen overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgIlJWnkcau3jxYgP9RMFxxK-c7wS6oM37NNjflev1ifeGYq5HCtw7lH_ed8_uvFERxT0uGzBgzhIQgAXxptwZUjqn2O7SADdIor1WYuyYRJsiHC9nSCuye9cwdZG6zY5Y2ibP6TcdLilt_yfTpwgzvqORwXVAg85qGBPpIoXAGPcO-QifyaUHlUFpOLpAajf9iZU5-jqSq4u3NLEgbwAf3eI-jzVitnSY4k_sDHPzfF6nf6fLRIMxGh-LolhZYEf26PxBa6mQwZJX");'>
+            
+            <button class="absolute pin-pulse" style="top: 30%; left: 25%;" onclick="selectProperty(0)">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-white shadow-lg hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-lg">home</span>
+                </div>
+            </button>
+
+            <button class="absolute pin-pulse" style="top: 45%; left: 60%;" onclick="selectProperty(1)">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-white shadow-lg hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-lg">apartment</span>
+                </div>
+            </button>
+        </div>
+
+        <div class="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-10">
+            <button onclick="centerLocation()" class="flex h-10 w-10 items-center justify-center rounded-xl glass shadow-lg hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-gray-800 text-lg">my_location</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottom Sheet -->
+    <div id="bottomSheet" class="bottom-sheet fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-40" style="height: 40vh; transform: translateY(0);">
+        <div class="handle-area py-3 flex items-center justify-center cursor-grab active:cursor-grabbing" id="sheetHandle">
+            <div class="h-1.5 w-12 rounded-full bg-gray-300"></div>
+        </div>
+
+        <div class="px-4 pb-20 h-[calc(100%-48px)] overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-gray-900 text-base font-bold">Propiedades cercanas</h2>
+                <span class="text-primary text-sm font-semibold"><span id="propertyCount">5</span> encontradas</span>
+            </div>
+
+            <div id="propertyCarousel" class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+                <!-- Las propiedades se cargan dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-2 glass border-t border-gray-200/50 h-16">
+        <a href="map-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-primary">
+            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">map</span>
+            <span class="text-xs font-bold">Mapa</span>
+        </a>
+        <a href="search-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all">
+            <span class="material-symbols-outlined text-lg">search</span>
+            <span class="text-xs font-medium">Buscar</span>
+        </a>
+        <a href="favorites-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all">
+            <span class="material-symbols-outlined text-lg">favorite_border</span>
+            <span class="text-xs font-medium">Favoritos</span>
+        </a>
+        <button onclick="contactAgent()" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white shadow-md hover:scale-105">
+            <span class="material-symbols-outlined text-lg">support_agent</span>
+            <span class="text-xs font-bold">Contacto</span>
+        </button>
+        <a href="profile-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all">
+            <span class="material-symbols-outlined text-lg">person</span>
+            <span class="text-xs font-medium">Perfil</span>
+        </a>
+    </nav>
+
+    <!-- Toast -->
+    <div id="toast" class="toast px-6 py-3 rounded-full glass shadow-2xl">
+        <p class="text-gray-900 text-sm font-semibold" id="toastMessage"></p>
+    </div>
+
+    <script>
+        // Datos mock de propiedades
+        const properties = [
+            {
+                id: 1,
+                type: 'house',
+                price: 750000,
+                address: '123 Maple Street',
+                location: 'San Francisco, CA',
+                distance: '2.4 km',
+                beds: 3,
+                baths: 2,
+                sqft: 2150,
+                image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'
+            },
+            {
+                id: 2,
+                type: 'apartment',
+                price: 650000,
+                address: '456 Oak Avenue',
+                location: 'San Francisco, CA',
+                distance: '3.1 km',
+                beds: 3,
+                baths: 2.5,
+                sqft: 1950,
+                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80'
+            }
+        ];
+
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        let activeFilter = null;
+
+        // Bottom Sheet con drag
+        let isDragging = false;
+        let startY = 0;
+        let currentTranslateY = 0;
+        const sheet = document.getElementById('bottomSheet');
+        const handle = document.getElementById('sheetHandle');
+        const minHeight = 60;
+        const defaultHeight = window.innerHeight * 0.40;
+
+        handle.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startY = e.touches[0].clientY;
+            sheet.classList.add('dragging');
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+            currentTranslateY = Math.max(-200, Math.min(window.innerHeight - minHeight, deltaY));
+            sheet.style.transform = `translateY(${currentTranslateY}px)`;
+        });
+
+        document.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            sheet.classList.remove('dragging');
+
+            if (currentTranslateY > defaultHeight / 2) {
+                sheet.classList.add('hidden-state');
+            } else {
+                sheet.classList.remove('hidden-state');
+                sheet.style.transform = 'translateY(0)';
+            }
+            currentTranslateY = 0;
+        });
+
+        // Renderizar propiedades
+        function renderProperties(filter = null) {
+            const carousel = document.getElementById('propertyCarousel');
+            const filteredProps = filter ? properties.filter(p => p.type === filter) : properties;
+            
+            document.getElementById('propertyCount').textContent = filteredProps.length;
+
+            carousel.innerHTML = filteredProps.map((prop) => `
+                <div class="flex-none w-[85%] max-w-sm">
+                    <a href="details-page.html?id=${prop.id}" class="flex flex-col gap-3 rounded-2xl glass p-3 shadow-lg active:scale-95 transition-transform">
+                        <div class="relative w-full">
+                            <div class="w-full bg-center bg-cover aspect-[4/3] rounded-xl" style="background-image: url('${prop.image}');"></div>
+                            
+                            <button onclick="toggleFavorite(${prop.id}, event)" class="absolute top-3 right-3 flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-110 transition-all">
+                                <span class="material-symbols-outlined text-xl ${favorites.includes(prop.id) ? 'text-primary' : 'text-gray-700'}" style="font-variation-settings: 'FILL' ${favorites.includes(prop.id) ? 1 : 0};">favorite</span>
+                            </button>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-baseline gap-2">
+                                <p class="text-gray-900 text-2xl font-bold">$${prop.price.toLocaleString()}</p>
+                            </div>
+                            <p class="text-gray-600 text-sm font-semibold">${prop.address}</p>
+                            <div class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-gray-400 text-xs">location_on</span>
+                                <p class="text-gray-500 text-xs">${prop.location} • ${prop.distance}</p>
+                            </div>
+
+                            <div class="flex items-center gap-4 pt-1">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-gray-600 text-lg">bed</span>
+                                    <span class="text-gray-700 text-sm font-bold">${prop.beds}</span>
+                                </div>
+                                <div class="h-4 w-px bg-gray-300"></div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-gray-600 text-lg">bathtub</span>
+                                    <span class="text-gray-700 text-sm font-bold">${prop.baths}</span>
+                                </div>
+                                <div class="h-4 w-px bg-gray-300"></div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-gray-600 text-lg">square_foot</span>
+                                    <span class="text-gray-700 text-sm font-bold">${prop.sqft}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function filterByType(type) {
+            if (activeFilter === type) {
+                activeFilter = null;
+                renderProperties();
+            } else {
+                activeFilter = type;
+                renderProperties(type);
+            }
+        }
+
+        function toggleFavorite(propertyId, event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const index = favorites.indexOf(propertyId);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                showToast('Eliminado de favoritos');
+            } else {
+                favorites.push(propertyId);
+                showToast('Agregado a favoritos ❤️');
+            }
+
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            updateFavoriteCount();
+            renderProperties(activeFilter);
+        }
+
+        function updateFavoriteCount() {
+            document.getElementById('favCount').textContent = favorites.length;
+        }
+
+        function selectProperty(index) {
+            const carousel = document.getElementById('propertyCarousel');
+            const cards = carousel.querySelectorAll('.flex-none');
+            if (cards[index]) {
+                cards[index].scrollIntoView({ behavior: 'smooth', inline: 'start' });
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+        }
+
+        function toggleFilters() {
+            showToast('Filtros avanzados próximamente');
+        }
+
+        function centerLocation() {
+            showToast('Centrando ubicación...');
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            showToast(isDark ? 'Modo oscuro activado 🌙' : 'Modo claro activado ☀️');
+        }
+
+        function goToFavorites() {
+            window.location.href = 'favorites-page.html';
+        }
+
+        function contactAgent() {
+            showToast('Conectando con agente...');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Event Listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (e.target.value.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+        });
+          
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            if (savedDarkMode === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+
+            updateFavoriteCount();
+            renderProperties();
+
+            setTimeout(() => {
+                showToast('¡Bienvenido! 🏠');
+            }, 500);
+        });
+    </script>
+
+</body>
+</html>

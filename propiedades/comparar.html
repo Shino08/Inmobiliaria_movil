@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Comparar Propiedades - MEA</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700"
+        rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f9fafb;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+        }
+
+        .dark .glass {
+            background: rgba(42, 42, 40, 0.95);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button onclick="goBack()"
+                    class="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+                </button>
+                <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Comparar Propiedades</h1>
+            </div>
+            <button onclick="clearComparison()"
+                class="text-primary text-sm font-semibold hover:text-primary-dark transition">
+                Limpiar
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="pt-16 pb-6">
+
+        <!-- Selector de propiedades -->
+        <div class="px-4 py-4 border-b border-gray-200 dark:border-gray-700">
+            <p class="text-gray-600 dark:text-gray-400 text-xs font-medium mb-3">Selecciona hasta 3 propiedades</p>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                <div id="slot1"
+                    class="property-slot flex-shrink-0 w-32 h-40 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-all"
+                    onclick="addProperty(1)">
+                    <span class="material-symbols-outlined text-gray-400 text-3xl mb-2">add_circle</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-xs font-semibold">Agregar</span>
+                </div>
+                <div id="slot2"
+                    class="property-slot flex-shrink-0 w-32 h-40 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-all"
+                    onclick="addProperty(2)">
+                    <span class="material-symbols-outlined text-gray-400 text-3xl mb-2">add_circle</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-xs font-semibold">Agregar</span>
+                </div>
+                <div id="slot3"
+                    class="property-slot flex-shrink-0 w-32 h-40 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-all"
+                    onclick="addProperty(3)">
+                    <span class="material-symbols-outlined text-gray-400 text-3xl mb-2">add_circle</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-xs font-semibold">Agregar</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de comparación -->
+        <div id="comparisonTable" class="hidden px-4 py-6">
+            <div class="mb-4">
+                <h2 class="text-gray-900 dark:text-gray-100 text-base font-bold">Comparación detallada</h2>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+                <table class="w-full">
+                    <tbody id="tableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Se genera dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Estado vacío -->
+        <div id="emptyState" class="flex flex-col items-center justify-center py-20 px-4">
+            <div class="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-gray-400 text-5xl">compare</span>
+            </div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-xl font-bold mb-2">Compara propiedades</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm text-center mb-6 max-w-xs">
+                Agrega hasta 3 propiedades para comparar características y precios
+            </p>
+            <button onclick="goToSearch()"
+                class="px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-all">
+                Buscar propiedades
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Modal de selección -->
+    <div id="selectModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-t-3xl w-full max-w-2xl max-h-[80vh] overflow-hidden animate-slide-up">
+            <div class="sticky top-0 px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Seleccionar propiedad</h3>
+                    <button onclick="closeModal()"
+                        class="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">close</span>
+                    </button>
+                </div>
+            </div>
+            <div id="propertyList" class="overflow-y-auto p-4 space-y-3" style="max-height: calc(80vh - 100px);">
+                <!-- Se carga dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const availableProperties = [
+            {
+                id: 1,
+                name: 'Casa Moderna Downtown',
+                price: 750000,
+                address: '123 Maple St, SF',
+                beds: 3,
+                baths: 2,
+                sqft: 2150,
+                parking: 2,
+                yearBuilt: 2018,
+                features: ['Piscina', 'Jardín', 'Seguridad 24/7'],
+                image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80'
+            },
+            {
+                id: 2,
+                name: 'Apartamento Vista al Mar',
+                price: 450000,
+                address: '456 Ocean Ave, PA',
+                beds: 2,
+                baths: 1.5,
+                sqft: 1650,
+                parking: 1,
+                yearBuilt: 2020,
+                features: ['Gimnasio', 'Balcón', 'Portero'],
+                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80'
+            },
+            {
+                id: 3,
+                name: 'Villa Exclusiva',
+                price: 1200000,
+                address: '789 Pine Rd, Berkeley',
+                beds: 4,
+                baths: 3,
+                sqft: 3200,
+                parking: 3,
+                yearBuilt: 2019,
+                features: ['Piscina', 'Jardín', 'Gimnasio', 'Sauna'],
+                image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80'
+            }
+        ];
+
+        let selectedProperties = [null, null, null];
+        let currentSlot = null;
+
+        function addProperty(slot) {
+            currentSlot = slot;
+            renderPropertyList();
+            document.getElementById('selectModal').classList.remove('hidden');
+        }
+
+        function renderPropertyList() {
+            const list = document.getElementById('propertyList');
+            const selectedIds = selectedProperties.map(p => p?.id).filter(Boolean);
+
+            list.innerHTML = availableProperties
+                .filter(p => !selectedIds.includes(p.id))
+                .map(prop => `
+                <button onclick="selectProperty(${prop.id})" class="w-full flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all active:scale-95">
+                    <div class="w-16 h-16 rounded-lg bg-cover bg-center flex-shrink-0" style="background-image: url('${prop.image}');"></div>
+                    <div class="flex-1 text-left min-w-0">
+                        <h4 class="text-gray-900 dark:text-gray-100 text-sm font-bold truncate">${prop.name}</h4>
+                        <p class="text-gray-500 text-xs truncate">${prop.address}</p>
+                        <p class="text-primary text-sm font-bold mt-1">$${prop.price.toLocaleString()}</p>
+                    </div>
+                    <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                </button>
+            `).join('');
+        }
+
+        function selectProperty(id) {
+            const property = availableProperties.find(p => p.id === id);
+            if (property && currentSlot) {
+                selectedProperties[currentSlot - 1] = property;
+                updateSlot(currentSlot, property);
+                closeModal();
+                updateComparison();
+            }
+        }
+
+        function updateSlot(slot, property) {
+            const slotElement = document.getElementById(`slot${slot}`);
+            slotElement.innerHTML = `
+            <div class="relative w-full h-full rounded-xl bg-cover bg-center" style="background-image: url('${property.image}');">
+                <button onclick="removeProperty(${slot}, event)" class="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition-all">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+                <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent rounded-b-xl">
+                    <p class="text-white text-xs font-bold truncate">${property.name}</p>
+                    <p class="text-white/80 text-[10px]">$${property.price.toLocaleString()}</p>
+                </div>
+            </div>
+        `;
+            slotElement.onclick = null;
+        }
+
+        function removeProperty(slot, event) {
+            event.stopPropagation();
+            selectedProperties[slot - 1] = null;
+            const slotElement = document.getElementById(`slot${slot}`);
+            slotElement.innerHTML = `
+            <span class="material-symbols-outlined text-gray-400 text-3xl mb-2">add_circle</span>
+            <span class="text-gray-500 dark:text-gray-400 text-xs font-semibold">Agregar</span>
+        `;
+            slotElement.onclick = () => addProperty(slot);
+            updateComparison();
+        }
+
+        function updateComparison() {
+            const validProperties = selectedProperties.filter(p => p !== null);
+            const emptyState = document.getElementById('emptyState');
+            const comparisonTable = document.getElementById('comparisonTable');
+
+            if (validProperties.length < 2) {
+                emptyState.classList.remove('hidden');
+                comparisonTable.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            comparisonTable.classList.remove('hidden');
+
+            const tableBody = document.getElementById('tableBody');
+            const rows = [
+                { label: 'Precio', key: 'price', format: (v) => `$${v.toLocaleString()}`, highlight: true },
+                { label: 'Habitaciones', key: 'beds', icon: 'bed' },
+                { label: 'Baños', key: 'baths', icon: 'bathtub' },
+                { label: 'Área (pies²)', key: 'sqft', format: (v) => v.toLocaleString() },
+                { label: 'Estacionamientos', key: 'parking', icon: 'garage' },
+                { label: 'Año construcción', key: 'yearBuilt' },
+                { label: 'Características', key: 'features', format: (v) => v.join(', ') }
+            ];
+
+            tableBody.innerHTML = rows.map(row => {
+                const cells = validProperties.map(prop => {
+                    const value = prop[row.key];
+                    const formatted = row.format ? row.format(value) : value;
+                    return `
+                    <td class="px-4 py-3 text-center ${row.highlight ? 'text-primary text-base font-black' : 'text-gray-700 dark:text-gray-300 text-sm'}">
+                        ${formatted}
+                    </td>
+                `;
+                }).join('');
+
+                return `
+                <tr class="bg-white dark:bg-gray-800">
+                    <td class="px-4 py-3 text-left text-gray-900 dark:text-gray-100 text-sm font-semibold whitespace-nowrap">
+                        ${row.icon ? `<span class="material-symbols-outlined text-primary text-sm mr-2">${row.icon}</span>` : ''}
+                        ${row.label}
+                    </td>
+                    ${cells}
+                </tr>
+            `;
+            }).join('');
+        }
+
+        function clearComparison() {
+            if (confirm('¿Limpiar todas las propiedades?')) {
+                selectedProperties = [null, null, null];
+                [1, 2, 3].forEach(slot => {
+                    const slotElement = document.getElementById(`slot${slot}`);
+                    slotElement.innerHTML = `
+                    <span class="material-symbols-outlined text-gray-400 text-3xl mb-2">add_circle</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-xs font-semibold">Agregar</span>
+                `;
+                    slotElement.onclick = () => addProperty(slot);
+                });
+                updateComparison();
+                showToast('Comparación limpiada');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('selectModal').classList.add('hidden');
+            currentSlot = null;
+        }
+
+        function goToSearch() {
+            window.location.href = 'search-page.html';
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+            updateComparison();
+        });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('selectModal').addEventListener('click', (e) => {
+            if (e.target.id === 'selectModal') {
+                closeModal();
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

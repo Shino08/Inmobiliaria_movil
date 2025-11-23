@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Filtros Avanzados - B&D</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #FFFFFF; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        .dark .glass { background: rgba(42, 42, 40, 0.95); }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(234, 91, 43, 0.3); border-radius: 10px; }
+        
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .animate-slide-in { animation: slideIn 0.3s ease; }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 glass border-b border-gray-200/50 dark:border-gray-700/50">
+        <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95">
+            <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+        </button>
+        <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Filtros Avanzados</h2>
+        <button onclick="resetFilters()" class="text-primary text-sm font-semibold hover:text-primary-dark transition">
+            Limpiar
+        </button>
+    </header>
+
+    <!-- Contenido -->
+    <main class="pt-20 pb-24 px-4 max-w-2xl mx-auto overflow-y-auto custom-scrollbar h-screen">
+        <div class="space-y-6 py-4">
+
+            <!-- Rango de precio -->
+            <div class="animate-slide-in">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">attach_money</span>
+                    Rango de precio
+                </h3>
+                <div class="flex gap-3">
+                    <div class="flex-1">
+                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Mínimo</label>
+                        <input 
+                            type="number" 
+                            id="minPrice"
+                            placeholder="$0" 
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:border-primary transition-colors" 
+                        />
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Máximo</label>
+                        <input 
+                            type="number" 
+                            id="maxPrice"
+                            placeholder="Sin límite" 
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:border-primary transition-colors" 
+                        />
+                    </div>
+                </div>
+                <!-- Presets de precio -->
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <button onclick="setPriceFilter(0, 500000)" class="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-xs font-semibold hover:bg-primary hover:text-white transition-all">
+                        Hasta $500K
+                    </button>
+                    <button onclick="setPriceFilter(500000, 750000)" class="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-xs font-semibold hover:bg-primary hover:text-white transition-all">
+                        $500K - $750K
+                    </button>
+                    <button onclick="setPriceFilter(750000, 1000000)" class="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-xs font-semibold hover:bg-primary hover:text-white transition-all">
+                        $750K - $1M
+                    </button>
+                    <button onclick="setPriceFilter(1000000, 10000000)" class="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-xs font-semibold hover:bg-primary hover:text-white transition-all">
+                        Más de $1M
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tipo de propiedad -->
+            <div>
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">home</span>
+                    Tipo de propiedad
+                </h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="togglePropertyType('house')" data-type="house" class="property-type-btn flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary/5 transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-2xl">home</span>
+                        <div class="text-left">
+                            <p class="text-sm font-bold">Casas</p>
+                            <p class="text-xs text-gray-500">3 disponibles</p>
+                        </div>
+                    </button>
+                    <button onclick="togglePropertyType('apartment')" data-type="apartment" class="property-type-btn flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary/5 transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-2xl">apartment</span>
+                        <div class="text-left">
+                            <p class="text-sm font-bold">Apartamentos</p>
+                            <p class="text-xs text-gray-500">2 disponibles</p>
+                        </div>
+                    </button>
+                    <button onclick="togglePropertyType('villa')" data-type="villa" class="property-type-btn flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary/5 transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-2xl">villa</span>
+                        <div class="text-left">
+                            <p class="text-sm font-bold">Villas</p>
+                            <p class="text-xs text-gray-500">2 disponibles</p>
+                        </div>
+                    </button>
+                    <button onclick="togglePropertyType('commercial')" data-type="commercial" class="property-type-btn flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary/5 transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-2xl">business</span>
+                        <div class="text-left">
+                            <p class="text-sm font-bold">Comercial</p>
+                            <p class="text-xs text-gray-500">Próximamente</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Habitaciones -->
+            <div>
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">bed</span>
+                    Habitaciones
+                </h3>
+                <div class="grid grid-cols-5 gap-2">
+                    <button onclick="selectBedrooms(1)" class="bed-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">1+</button>
+                    <button onclick="selectBedrooms(2)" class="bed-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">2+</button>
+                    <button onclick="selectBedrooms(3)" class="bed-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-primary bg-primary text-white">3+</button>
+                    <button onclick="selectBedrooms(4)" class="bed-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">4+</button>
+                    <button onclick="selectBedrooms(5)" class="bed-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">5+</button>
+                </div>
+            </div>
+
+            <!-- Baños -->
+            <div>
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">bathtub</span>
+                    Baños
+                </h3>
+                <div class="grid grid-cols-5 gap-2">
+                    <button onclick="selectBathrooms(1)" class="bath-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">1+</button>
+                    <button onclick="selectBathrooms(2)" class="bath-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-primary bg-primary text-white">2+</button>
+                    <button onclick="selectBathrooms(3)" class="bath-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">3+</button>
+                    <button onclick="selectBathrooms(4)" class="bath-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">4+</button>
+                    <button onclick="selectBathrooms(5)" class="bath-btn py-3 text-center text-sm font-bold rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">5+</button>
+                </div>
+            </div>
+
+            <!-- Características -->
+            <div>
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">check_circle</span>
+                    Características
+                </h3>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all">
+                        <input type="checkbox" class="w-5 h-5 text-primary rounded-md focus:ring-primary focus:ring-2" />
+                        <span class="material-symbols-outlined text-primary">pool</span>
+                        <span class="flex-1 text-gray-700 dark:text-gray-300 text-sm font-semibold">Piscina</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all">
+                        <input type="checkbox" class="w-5 h-5 text-primary rounded-md focus:ring-primary focus:ring-2" checked />
+                        <span class="material-symbols-outlined text-primary">garage</span>
+                        <span class="flex-1 text-gray-700 dark:text-gray-300 text-sm font-semibold">Garaje</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all">
+                        <input type="checkbox" class="w-5 h-5 text-primary rounded-md focus:ring-primary focus:ring-2" />
+                        <span class="material-symbols-outlined text-primary">yard</span>
+                        <span class="flex-1 text-gray-700 dark:text-gray-300 text-sm font-semibold">Jardín</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all">
+                        <input type="checkbox" class="w-5 h-5 text-primary rounded-md focus:ring-primary focus:ring-2" />
+                        <span class="material-symbols-outlined text-primary">fitness_center</span>
+                        <span class="flex-1 text-gray-700 dark:text-gray-300 text-sm font-semibold">Gimnasio</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all">
+                        <input type="checkbox" class="w-5 h-5 text-primary rounded-md focus:ring-primary focus:ring-2" />
+                        <span class="material-symbols-outlined text-primary">security</span>
+                        <span class="flex-1 text-gray-700 dark:text-gray-300 text-sm font-semibold">Seguridad 24/7</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-4 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all">
+                        <input type="checkbox" class="w-5 h-5 text-primary rounded-md focus:ring-primary focus:ring-2" />
+                        <span class="material-symbols-outlined text-primary">balcony</span>
+                        <span class="flex-1 text-gray-700 dark:text-gray-300 text-sm font-semibold">Balcón/Terraza</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Área en m² -->
+            <div>
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">square_foot</span>
+                    Área (m²)
+                </h3>
+                <div class="flex gap-3">
+                    <div class="flex-1">
+                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Mínimo</label>
+                        <input 
+                            type="number" 
+                            id="minArea"
+                            placeholder="0 m²" 
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:border-primary transition-colors" 
+                        />
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs text-gray-500 dark:text-gray-400 mb-1">Máximo</label>
+                        <input 
+                            type="number" 
+                            id="maxArea"
+                            placeholder="Sin límite" 
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:border-primary transition-colors" 
+                        />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Botones de acción fijos -->
+    <div class="fixed bottom-0 left-0 right-0 p-4 glass border-t border-gray-200/50 dark:border-gray-700/50">
+        <div class="max-w-2xl mx-auto flex gap-3">
+            <button onclick="resetFilters()" class="flex-1 px-6 py-4 rounded-xl bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-sm font-bold transition-all active:scale-95 hover:bg-gray-200 dark:hover:bg-gray-700">
+                Limpiar todo
+            </button>
+            <button onclick="applyFilters()" class="flex-1 px-6 py-4 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold shadow-lg transition-all active:scale-95 hover:shadow-xl">
+                Ver <span id="resultCount">7</span> resultados
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedPropertyTypes = [];
+        let selectedBedrooms = 3;
+        let selectedBathrooms = 2;
+
+        function setPriceFilter(min, max) {
+            document.getElementById('minPrice').value = min;
+            document.getElementById('maxPrice').value = max;
+            showToast(`Precio: $${min/1000}K - $${max/1000}K`);
+        }
+
+        function togglePropertyType(type) {
+            const btn = document.querySelector(`[data-type="${type}"]`);
+            const index = selectedPropertyTypes.indexOf(type);
+
+            if (index > -1) {
+                selectedPropertyTypes.splice(index, 1);
+                btn.classList.remove('border-primary', 'bg-primary/5');
+                btn.classList.add('border-gray-200', 'dark:border-gray-700');
+            } else {
+                selectedPropertyTypes.push(type);
+                btn.classList.remove('border-gray-200', 'dark:border-gray-700');
+                btn.classList.add('border-primary', 'bg-primary/5');
+            }
+        }
+
+        function selectBedrooms(count) {
+            selectedBedrooms = count;
+            document.querySelectorAll('.bed-btn').forEach(btn => {
+                btn.classList.remove('border-primary', 'bg-primary', 'text-white');
+                btn.classList.add('border-gray-200', 'dark:border-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            });
+            event.target.classList.remove('border-gray-200', 'dark:border-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            event.target.classList.add('border-primary', 'bg-primary', 'text-white');
+        }
+
+        function selectBathrooms(count) {
+            selectedBathrooms = count;
+            document.querySelectorAll('.bath-btn').forEach(btn => {
+                btn.classList.remove('border-primary', 'bg-primary', 'text-white');
+                btn.classList.add('border-gray-200', 'dark:border-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            });
+            event.target.classList.remove('border-gray-200', 'dark:border-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            event.target.classList.add('border-primary', 'bg-primary', 'text-white');
+        }
+
+        function resetFilters() {
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('minArea').value = '';
+            document.getElementById('maxArea').value = '';
+            selectedPropertyTypes = [];
+            selectedBedrooms = null;
+            selectedBathrooms = null;
+
+            document.querySelectorAll('.property-type-btn').forEach(btn => {
+                btn.classList.remove('border-primary', 'bg-primary/5');
+                btn.classList.add('border-gray-200', 'dark:border-gray-700');
+            });
+
+            document.querySelectorAll('.bed-btn, .bath-btn').forEach(btn => {
+                btn.classList.remove('border-primary', 'bg-primary', 'text-white');
+                btn.classList.add('border-gray-200', 'dark:border-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            });
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+            showToast('Filtros limpiados');
+        }
+
+        function applyFilters() {
+            const filters = {
+                minPrice: document.getElementById('minPrice').value,
+                maxPrice: document.getElementById('maxPrice').value,
+                minArea: document.getElementById('minArea').value,
+                maxArea: document.getElementById('maxArea').value,
+                propertyTypes: selectedPropertyTypes,
+                bedrooms: selectedBedrooms,
+                bathrooms: selectedBathrooms
+            };
+
+            localStorage.setItem('appliedFilters', JSON.stringify(filters));
+            showToast('Aplicando filtros...');
+            
+            setTimeout(() => {
+                window.location.href = 'search-page.html';
+            }, 1000);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-28 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+
+            // Cargar filtros guardados
+            const savedFilters = localStorage.getItem('appliedFilters');
+            if (savedFilters) {
+                const filters = JSON.parse(savedFilters);
+                if (filters.minPrice) document.getElementById('minPrice').value = filters.minPrice;
+                if (filters.maxPrice) document.getElementById('maxPrice').value = filters.maxPrice;
+                if (filters.minArea) document.getElementById('minArea').value = filters.minArea;
+                if (filters.maxArea) document.getElementById('maxArea').value = filters.maxArea;
+            }
+        });
+    </script>
+
+</body>
+</html>

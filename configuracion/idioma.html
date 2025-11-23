@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Idioma - B&D</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Idioma</h1>
+        </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="pt-20 pb-6 px-4 max-w-2xl mx-auto">
+        
+        <div class="mb-4">
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Selecciona tu idioma preferido</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            
+            <button onclick="selectLanguage('es')" class="language-option w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-2 border-primary bg-primary/5" data-lang="es">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-red-600 text-2xl">
+                    🇪🇸
+                </div>
+                <div class="flex-1 text-left">
+                    <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Español</p>
+                    <p class="text-gray-500 text-xs">Spanish</p>
+                </div>
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            </button>
+
+            <button onclick="selectLanguage('en')" class="language-option w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700" data-lang="en">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 text-2xl">
+                    🇺🇸
+                </div>
+                <div class="flex-1 text-left">
+                    <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">English</p>
+                    <p class="text-gray-500 text-xs">Inglés</p>
+                </div>
+                <span class="material-symbols-outlined text-gray-400 hidden check-icon">check_circle</span>
+            </button>
+
+            <button onclick="selectLanguage('fr')" class="language-option w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700" data-lang="fr">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 text-2xl">
+                    🇫🇷
+                </div>
+                <div class="flex-1 text-left">
+                    <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Français</p>
+                    <p class="text-gray-500 text-xs">Francés</p>
+                </div>
+                <span class="material-symbols-outlined text-gray-400 hidden check-icon">check_circle</span>
+            </button>
+
+            <button onclick="selectLanguage('de')" class="language-option w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700" data-lang="de">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-100 text-yellow-600 text-2xl">
+                    🇩🇪
+                </div>
+                <div class="flex-1 text-left">
+                    <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Deutsch</p>
+                    <p class="text-gray-500 text-xs">Alemán</p>
+                </div>
+                <span class="material-symbols-outlined text-gray-400 hidden check-icon">check_circle</span>
+            </button>
+
+            <button onclick="selectLanguage('pt')" class="language-option w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700" data-lang="pt">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 text-2xl">
+                    🇧🇷
+                </div>
+                <div class="flex-1 text-left">
+                    <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Português</p>
+                    <p class="text-gray-500 text-xs">Portugués</p>
+                </div>
+                <span class="material-symbols-outlined text-gray-400 hidden check-icon">check_circle</span>
+            </button>
+
+        </div>
+
+        <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+            <p class="text-blue-900 dark:text-blue-300 text-xs">
+                <span class="material-symbols-outlined text-sm align-middle mr-1">info</span>
+                La aplicación se reiniciará para aplicar el cambio de idioma
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function selectLanguage(lang) {
+            document.querySelectorAll('.language-option').forEach(btn => {
+                const checkIcon = btn.querySelector('.check-icon');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('border-2', 'border-primary', 'bg-primary/5');
+                    btn.classList.remove('border-t', 'border-gray-100', 'dark:border-gray-700');
+                    checkIcon.classList.remove('hidden', 'text-gray-400');
+                    checkIcon.classList.add('text-primary');
+                    checkIcon.style.fontVariationSettings = "'FILL' 1";
+                } else {
+                    btn.classList.remove('border-2', 'border-primary', 'bg-primary/5');
+                    if (btn.dataset.lang !== 'es') {
+                        btn.classList.add('border-t', 'border-gray-100', 'dark:border-gray-700');
+                    }
+                    checkIcon.classList.add('hidden', 'text-gray-400');
+                    checkIcon.classList.remove('text-primary');
+                    checkIcon.style.fontVariationSettings = "'FILL' 0";
+                }
+            });
+
+            localStorage.setItem('language', lang);
+            showToast('✓ Idioma actualizado');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
+
+</body>
+</html>

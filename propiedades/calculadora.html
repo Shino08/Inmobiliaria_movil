@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Calculadora - MEA</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        input[type="range"]::-webkit-slider-track {
+            background: linear-gradient(to right, #EA5B2B 0%, #EA5B2B var(--value), #e5e7eb var(--value), #e5e7eb 100%);
+            height: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #EA5B2B;
+            height: 1.5rem;
+            width: 1.5rem;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin-top: -0.5rem;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-gray-100 transition-colors">
+                    <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+                </button>
+                <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Calculadora</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="fixed top-16 left-0 right-0 z-40 px-4 pt-2 pb-3 glass border-b border-gray-200/50">
+        <div class="flex gap-2">
+            <button onclick="switchCalculator('mortgage')" class="calc-tab px-4 py-2 rounded-lg bg-primary text-white text-sm font-bold" data-tab="mortgage">
+                Hipoteca
+            </button>
+            <button onclick="switchCalculator('roi')" class="calc-tab px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-semibold" data-tab="roi">
+                ROI
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenido -->
+    <main class="pt-32 pb-6 px-4 max-w-2xl mx-auto">
+
+        <!-- Calculadora de Hipoteca -->
+        <div id="mortgageCalc" class="space-y-6">
+            
+            <!-- Precio de propiedad -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Precio de la propiedad</label>
+                    <span class="text-primary text-lg font-black">$<span id="priceValue">500000</span></span>
+                </div>
+                <input 
+                    type="range" 
+                    id="priceRange"
+                    min="50000" 
+                    max="5000000" 
+                    step="10000"
+                    value="500000"
+                    oninput="updateMortgage()"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- Enganche -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Enganche</label>
+                    <span class="text-primary text-lg font-black"><span id="downPaymentPercent">20</span>% ($<span id="downPaymentValue">100000</span>)</span>
+                </div>
+                <input 
+                    type="range" 
+                    id="downPaymentRange"
+                    min="5" 
+                    max="50" 
+                    value="20"
+                    oninput="updateMortgage()"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- Tasa de interés -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Tasa de interés anual</label>
+                    <span class="text-primary text-lg font-black"><span id="interestValue">6.5</span>%</span>
+                </div>
+                <input 
+                    type="range" 
+                    id="interestRange"
+                    min="1" 
+                    max="15" 
+                    step="0.1"
+                    value="6.5"
+                    oninput="updateMortgage()"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- Plazo -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Plazo</label>
+                    <span class="text-primary text-lg font-black"><span id="termValue">30</span> años</span>
+                </div>
+                <input 
+                    type="range" 
+                    id="termRange"
+                    min="5" 
+                    max="30" 
+                    step="5"
+                    value="30"
+                    oninput="updateMortgage()"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- Resultados -->
+            <div class="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-primary-dark/10 border-2 border-primary/20">
+                <h3 class="text-gray-900 dark:text-gray-100 text-base font-bold mb-4">Resumen de Pago</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">Pago mensual</span>
+                        <span class="text-gray-900 dark:text-gray-100 text-2xl font-black">$<span id="monthlyPayment">2,531</span></span>
+                    </div>
+                    <div class="h-px bg-primary/20"></div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">Monto del préstamo</span>
+                        <span class="text-gray-700 dark:text-gray-300 text-sm font-bold">$<span id="loanAmount">400,000</span></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">Total de intereses</span>
+                        <span class="text-gray-700 dark:text-gray-300 text-sm font-bold">$<span id="totalInterest">511,160</span></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">Total a pagar</span>
+                        <span class="text-gray-700 dark:text-gray-300 text-sm font-bold">$<span id="totalPayment">911,160</span></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Calculadora de ROI -->
+        <div id="roiCalc" class="hidden space-y-6">
+            
+            <!-- Inversión inicial -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Inversión inicial</label>
+                    <span class="text-primary text-lg font-black">$<span id="investmentValue">100000</span></span>
+                </div>
+                <input 
+                    type="range" 
+                    id="investmentRange"
+                    min="10000" 
+                    max="1000000" 
+                    step="5000"
+                    value="100000"
+                    oninput="updateROI()"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- ROI esperado -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold">ROI anual esperado</label>
+                    <span class="text-primary text-lg font-black"><span id="roiValue">12</span>%</span>
+                </div>
+                <input 
+                    type="range" 
+                    id="roiRange"
+                    min="1" 
+                    max="30" 
+                    step="0.5"
+                    value="12"
+                    oninput="updateROI()"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- Plazo de inversión -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Plazo</label>
+                    <span class="text-primary text-lg font-black"><span id="roiTermValue">18</span> meses</span>
+                </div>
+                <input 
+                    type="range" 
+                    id="roiTermRange"
+                    min="6" 
+                    max="60" 
+                    step="6"
+                    value="18"
+                    oninput="updateROI()"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- Resultados ROI -->
+            <div class="p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800">
+                <h3 class="text-gray-900 dark:text-gray-100 text-base font-bold mb-4">Proyección de Retorno</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">Retorno total</span>
+                        <span class="text-green-600 dark:text-green-400 text-2xl font-black">$<span id="roiReturn">18,000</span></span>
+                    </div>
+                    <div class="h-px bg-green-200 dark:bg-green-800"></div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">Total al vencimiento</span>
+                        <span class="text-gray-700 dark:text-gray-300 text-sm font-bold">$<span id="roiTotal">118,000</span></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">ROI efectivo</span>
+                        <span class="text-gray-700 dark:text-gray-300 text-sm font-bold"><span id="roiEffective">18.0</span>%</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Botón de acción -->
+        <div class="mt-6">
+            <button onclick="saveCalculation()" class="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-base font-bold shadow-lg hover:scale-105 transition-transform">
+                Guardar cálculo
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        let currentCalc = 'mortgage';
+
+        function switchCalculator(type) {
+            currentCalc = type;
+
+            document.querySelectorAll('.calc-tab').forEach(tab => {
+                if (tab.dataset.tab === type) {
+                    tab.classList.remove('bg-gray-100', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+                    tab.classList.add('bg-primary', 'text-white');
+                } else {
+                    tab.classList.remove('bg-primary', 'text-white');
+                    tab.classList.add('bg-gray-100', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+                }
+            });
+
+            if (type === 'mortgage') {
+                document.getElementById('mortgageCalc').classList.remove('hidden');
+                document.getElementById('roiCalc').classList.add('hidden');
+            } else {
+                document.getElementById('mortgageCalc').classList.add('hidden');
+                document.getElementById('roiCalc').classList.remove('hidden');
+            }
+        }
+
+        function updateMortgage() {
+            const price = parseInt(document.getElementById('priceRange').value);
+            const downPaymentPercent = parseInt(document.getElementById('downPaymentRange').value);
+            const interest = parseFloat(document.getElementById('interestRange').value);
+            const term = parseInt(document.getElementById('termRange').value);
+
+            document.getElementById('priceValue').textContent = price.toLocaleString();
+            document.getElementById('downPaymentPercent').textContent = downPaymentPercent;
+            
+            const downPayment = price * (downPaymentPercent / 100);
+            document.getElementById('downPaymentValue').textContent = Math.round(downPayment).toLocaleString();
+            
+            document.getElementById('interestValue').textContent = interest.toFixed(1);
+            document.getElementById('termValue').textContent = term;
+
+            const loanAmount = price - downPayment;
+            const monthlyRate = interest / 100 / 12;
+            const numPayments = term * 12;
+            
+            const monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+            const totalPayment = monthlyPayment * numPayments;
+            const totalInterest = totalPayment - loanAmount;
+
+            document.getElementById('monthlyPayment').textContent = Math.round(monthlyPayment).toLocaleString();
+            document.getElementById('loanAmount').textContent = Math.round(loanAmount).toLocaleString();
+            document.getElementById('totalInterest').textContent = Math.round(totalInterest).toLocaleString();
+            document.getElementById('totalPayment').textContent = Math.round(totalPayment).toLocaleString();
+        }
+
+        function updateROI() {
+            const investment = parseInt(document.getElementById('investmentRange').value);
+            const roiPercent = parseFloat(document.getElementById('roiRange').value);
+            const termMonths = parseInt(document.getElementById('roiTermRange').value);
+
+            document.getElementById('investmentValue').textContent = investment.toLocaleString();
+            document.getElementById('roiValue').textContent = roiPercent.toFixed(1);
+            document.getElementById('roiTermValue').textContent = termMonths;
+
+            const years = termMonths / 12;
+            const roiReturn = investment * (roiPercent / 100) * years;
+            const roiTotal = investment + roiReturn;
+            const roiEffective = (roiReturn / investment) * 100;
+
+            document.getElementById('roiReturn').textContent = Math.round(roiReturn).toLocaleString();
+            document.getElementById('roiTotal').textContent = Math.round(roiTotal).toLocaleString();
+            document.getElementById('roiEffective').textContent = roiEffective.toFixed(1);
+        }
+
+        function saveCalculation() {
+            showToast('Cálculo guardado exitosamente');
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+            updateMortgage();
+            updateROI();
+        });
+    </script>
+
+</body>
+</html>

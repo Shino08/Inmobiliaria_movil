@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>¡Inversión Exitosa! - MEA</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700"
+        rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        @keyframes checkmark {
+            0% {
+                stroke-dashoffset: 100;
+            }
+
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0) rotate(-45deg);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1) rotate(5deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .check-circle {
+            animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .check-mark {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: checkmark 0.6s 0.6s ease forwards;
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .animate-pulse-once {
+            animation: pulse 0.5s ease;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti 3s ease-out forwards;
+        }
+
+        .dark body {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+        }
+    </style>
+
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4 overflow-hidden relative">
+<!-- Confetti Container -->
+<div id="confettiContainer" class="fixed inset-0 pointer-events-none"></div>
+
+<!-- Main Content -->
+<div class="max-w-lg w-full relative z-10">
+    
+    <!-- Icono de éxito animado -->
+    <div class="flex justify-center mb-8">
+        <div class="relative">
+            <svg class="check-circle" width="140" height="140" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="65" fill="#10B981" opacity="0.15"/>
+                <circle cx="70" cy="70" r="58" fill="#10B981"/>
+                <polyline class="check-mark" points="40,70 60,88 100,50" fill="none" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <!-- Anillo pulsante -->
+            <div class="absolute inset-0 rounded-full bg-green-500/20 animate-ping"></div>
+        </div>
+    </div>
+
+    <!-- Título -->
+    <div class="animate-fade-in-up text-center mb-8" style="animation-delay: 0.6s;">
+        <h1 class="text-4xl font-black text-gray-900 dark:text-white mb-3">
+            ¡Inversión Exitosa! 🎉
+        </h1>
+        <p class="text-gray-700 dark:text-gray-300 text-lg mb-2">
+            Tu inversión ha sido procesada correctamente
+        </p>
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full">
+            <span class="material-symbols-outlined text-green-600 dark:text-green-400 text-sm">verified</span>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">
+                ID: <span class="font-mono font-bold text-gray-900 dark:text-white">#INV-<span id="transactionId">000000</span></span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Tarjeta de resumen -->
+    <div class="animate-fade-in-up bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-6 mb-6" style="animation-delay: 0.8s;">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-gray-900 dark:text-white text-xl font-bold">Resumen de Inversión</h2>
+            <button onclick="downloadReceipt()" class="flex items-center gap-1 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                <span class="material-symbols-outlined text-sm">download</span>
+                <span>Recibo</span>
+            </button>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">payments</span>
+                    </div>
+                    <span class="text-gray-600 dark:text-gray-400 text-sm font-medium">Monto invertido</span>
+                </div>
+                <span class="text-gray-900 dark:text-white text-lg font-black">$<span id="investedAmount">85,000</span></span>
+            </div>
+            
+            <div class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-green-600 dark:text-green-400">trending_up</span>
+                    </div>
+                    <span class="text-gray-600 dark:text-gray-400 text-sm font-medium">ROI anual estimado</span>
+                </div>
+                <span class="text-green-600 dark:text-green-400 text-lg font-black">14.2%</span>
+            </div>
+            
+            <div class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">schedule</span>
+                    </div>
+                    <span class="text-gray-600 dark:text-gray-400 text-sm font-medium">Plazo de inversión</span>
+                </div>
+                <span class="text-gray-900 dark:text-white text-lg font-black">18 meses</span>
+            </div>
+            
+            <div class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-orange-600 dark:text-orange-400">savings</span>
+                    </div>
+                    <span class="text-gray-600 dark:text-gray-400 text-sm font-medium">Retorno proyectado</span>
+                </div>
+                <span class="text-gray-900 dark:text-white text-lg font-black">$<span id="returnAmount">12,070</span></span>
+            </div>
+            
+            <div class="flex items-center justify-between pt-4 mt-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+                    </div>
+                    <span class="text-gray-900 dark:text-white text-base font-bold">Total al vencimiento</span>
+                </div>
+                <span class="text-primary text-2xl font-black">$<span id="totalAmount">97,070</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Próximos pasos -->
+    <div class="animate-fade-in-up bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-6 mb-6" style="animation-delay: 1s;">
+        <h3 class="text-gray-900 dark:text-white text-lg font-bold mb-5 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">checklist</span>
+            ¿Qué sigue ahora?
+        </h3>
+        <div class="space-y-4">
+            <div class="flex items-start gap-4 group">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition-transform">
+                    1
+                </div>
+                <div>
+                    <p class="text-gray-900 dark:text-white text-sm font-bold mb-1">Confirmación por email</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">
+                        Recibirás un correo con el contrato digital y todos los detalles de tu inversión
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex items-start gap-4 group">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition-transform">
+                    2
+                </div>
+                <div>
+                    <p class="text-gray-900 dark:text-white text-sm font-bold mb-1">Dashboard personalizado</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">
+                        Accede a tu panel para monitorear el progreso en tiempo real
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex items-start gap-4 group">
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition-transform">
+                    3
+                </div>
+                <div>
+                    <p class="text-gray-900 dark:text-white text-sm font-bold mb-1">Retornos automáticos</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">
+                        Los rendimientos se acreditarán automáticamente cada mes
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recomendación -->
+    <div class="animate-fade-in-up bg-gradient-to-br from-primary/10 to-orange-500/10 backdrop-blur-xl rounded-2xl border border-primary/20 p-5 mb-6" style="animation-delay: 1.2s;">
+        <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary text-2xl flex-shrink-0">tips_and_updates</span>
+            <div>
+                <h4 class="text-gray-900 dark:text-white text-sm font-bold mb-2">💡 Consejo de Inversión</h4>
+                <p class="text-gray-700 dark:text-gray-300 text-xs leading-relaxed mb-3">
+                    Diversifica tu portafolio invirtiendo en diferentes propiedades para reducir riesgos y maximizar retornos.
+                </p>
+                <button onclick="exploreMore()" class="text-primary text-xs font-bold hover:underline flex items-center gap-1">
+                    <span>Ver más oportunidades</span>
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="animate-fade-in-up space-y-3" style="animation-delay: 1.4s;">
+        <!-- Botón principal: Nueva inversión -->
+        <button onclick="newInvestment()" class="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-primary to-primary-dark text-white text-base font-bold shadow-2xl hover:scale-105 transition-all">
+            <span class="material-symbols-outlined">add_circle</span>
+            <span>Hacer otra inversión</span>
+        </button>
+        
+        <!-- Dashboard -->
+        <button onclick="goToDashboard()" class="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-base font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Ver mi Dashboard</span>
+        </button>
+        
+        <!-- Compartir (secundario) -->
+        <button onclick="shareSuccess()" class="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+            <span class="material-symbols-outlined text-base">share</span>
+            <span>Compartir</span>
+        </button>
+        
+        <!-- Volver al inicio (terciario) -->
+        <button onclick="goHome()" class="w-full px-6 py-3 text-gray-600 dark:text-gray-400 text-sm font-semibold hover:text-primary transition-colors flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-base">home</span>
+            <span>Volver al inicio</span>
+        </button>
+    </div>
+
+    <!-- Footer info -->
+    <div class="animate-fade-in-up mt-8 text-center" style="animation-delay: 1.6s;">
+        <p class="text-gray-500 dark:text-gray-400 text-xs">
+            Si tienes dudas, contacta a tu asesor personal
+        </p>
+        <button onclick="contactSupport()" class="mt-2 text-primary text-sm font-bold hover:underline">
+            Hablar con soporte
+        </button>
+    </div>
+
+</div>
+
+<script>
+    // Generar ID de transacción aleatorio
+    function generateTransactionId() {
+        return Math.floor(100000 + Math.random() * 900000);
+    }
+
+    // Crear confetti
+    function createConfetti() {
+        const colors = ['#EA5B2B', '#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899'];
+        const confettiContainer = document.getElementById('confettiContainer');
+        
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+                confettiContainer.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 4000);
+            }, i * 30);
+        }
+    }
+
+    function downloadReceipt() {
+        showToast('📄 Descargando recibo...');
+        setTimeout(() => {
+            showToast('✓ Recibo descargado');
+        }, 1500);
+    }
+
+    function newInvestment() {
+        window.location.href = 'investments-page.html';
+    }
+
+    function goToDashboard() {
+        window.location.href = 'profile-page.html?tab=investments';
+    }
+
+    function exploreMore() {
+        window.location.href = 'investments-page.html';
+    }
+
+    function shareSuccess() {
+        if (navigator.share) {
+            navigator.share({
+                title: '¡Acabo de invertir en MEA!',
+                text: 'He realizado una inversión inmobiliaria con un ROI de 14.2%',
+                url: window.location.href
+            }).catch(() => {
+                showToast('Compartir en redes sociales próximamente');
+            });
+        } else {
+            showToast('Compartir en redes sociales próximamente');
+        }
+    }
+
+    function contactSupport() {
+        window.location.href = 'messages-page.html?support=true';
+    }
+
+    function goHome() {
+        window.location.href = 'map-page.html';
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full bg-white dark:bg-gray-800 shadow-2xl text-gray-900 dark:text-white text-sm font-semibold z-50 animate-fade-in-up';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-20px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Obtener monto de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amount') || '85000';
+        
+        document.getElementById('investedAmount').textContent = parseInt(amount).toLocaleString();
+        document.getElementById('transactionId').textContent = generateTransactionId();
+
+        // Calcular retornos
+        const roi = 0.142;
+        const termMonths = 18;
+        const years = termMonths / 12;
+        const projectedReturn = parseInt(amount) * roi * years;
+        const totalReturn = parseInt(amount) + projectedReturn;
+
+        document.getElementById('returnAmount').textContent = Math.round(projectedReturn).toLocaleString();
+        document.getElementById('totalAmount').textContent = Math.round(totalReturn).toLocaleString();
+
+        // Lanzar confetti
+        setTimeout(() => {
+            createConfetti();
+        }, 1000);
+
+        // Guardar inversión en historial
+        const investment = {
+            id: document.getElementById('transactionId').textContent,
+            amount: amount,
+            date: new Date().toISOString(),
+            property: 'Casa Residencial Downtown',
+            roi: 14.2,
+            status: 'active'
+        };
+        
+        let investments = JSON.parse(localStorage.getItem('myInvestments') || '[]');
+        investments.push(investment);
+        localStorage.setItem('myInvestments', JSON.stringify(investments));
+
+        console.log('🎉 ¡Inversión registrada exitosamente!');
+    });
+</script>
+
+</body>
+
+</html>

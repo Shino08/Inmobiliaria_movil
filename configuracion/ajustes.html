@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Configuración - B&D</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Configuración</h1>
+        </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="pt-20 pb-6 px-4 max-w-2xl mx-auto space-y-6">
+        
+        <!-- Apariencia -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">Apariencia</h3>
+            </div>
+
+            <button onclick="toggleDarkMode()" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-purple-600 dark:hidden">dark_mode</span>
+                    <span class="material-symbols-outlined text-yellow-600 hidden dark:inline">light_mode</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Modo oscuro</p>
+                        <p class="text-gray-500 text-xs">Protege tus ojos en la noche</p>
+                    </div>
+                </div>
+                <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 dark:bg-primary transition-colors" id="darkModeToggle">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform translate-x-1 dark:translate-x-6"></span>
+                </div>
+            </button>
+
+            <button onclick="selectTheme()" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">palette</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Color de acento</p>
+                        <p class="text-gray-500 text-xs">Naranja</p>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+            </button>
+        </div>
+
+        <!-- Datos y almacenamiento -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">Datos y Almacenamiento</h3>
+            </div>
+
+            <div class="px-4 py-4 border-b border-gray-100 dark:border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Caché de imágenes</p>
+                    <p class="text-gray-500 text-sm">124 MB</p>
+                </div>
+                <button onclick="clearCache()" class="text-primary text-xs font-bold hover:underline">Limpiar caché</button>
+            </div>
+
+            <button onclick="toggleAutoDownload()" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-green-600">download</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Descarga automática</p>
+                        <p class="text-gray-500 text-xs">Solo con WiFi</p>
+                    </div>
+                </div>
+                <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary transition-colors" id="autoDownloadToggle">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform translate-x-6"></span>
+                </div>
+            </button>
+        </div>
+
+        <!-- Privacidad -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">Privacidad</h3>
+            </div>
+
+            <button onclick="toggleAnalytics()" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-blue-600">analytics</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Datos de uso</p>
+                        <p class="text-gray-500 text-xs">Ayúdanos a mejorar la app</p>
+                    </div>
+                </div>
+                <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary transition-colors" id="analyticsToggle">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform translate-x-6"></span>
+                </div>
+            </button>
+
+            <button onclick="toggleLocation()" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-red-600">location_on</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Ubicación</p>
+                        <p class="text-gray-500 text-xs">Mejorar búsquedas cercanas</p>
+                    </div>
+                </div>
+                <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary transition-colors" id="locationToggle">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform translate-x-6"></span>
+                </div>
+            </button>
+        </div>
+
+        <!-- Acerca de -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">Acerca de</h3>
+            </div>
+
+            <div class="px-4 py-4 space-y-3">
+                <div class="flex items-center justify-between">
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Versión</p>
+                    <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">2.0.1</p>
+                </div>
+                <div class="flex items-center justify-between">
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">Última actualización</p>
+                    <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">14 Nov 2025</p>
+                </div>
+                <button onclick="checkUpdates()" class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-700 dark:text-gray-300 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                    Buscar actualizaciones
+                </button>
+            </div>
+        </div>
+
+        <!-- Zona de peligro -->
+        <div class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-2xl p-4">
+            <h4 class="text-red-900 dark:text-red-300 text-sm font-bold mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined">warning</span>
+                Zona de Peligro
+            </h4>
+            <button onclick="deleteAccount()" class="w-full px-4 py-3 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-all">
+                Eliminar mi cuenta
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            showToast(isDark ? 'Modo oscuro activado 🌙' : 'Modo claro activado ☀️');
+        }
+
+        function selectTheme() {
+            showToast('Selector de colores próximamente');
+        }
+
+        function clearCache() {
+            showToast('✓ Caché limpiado (124 MB liberados)');
+        }
+
+        function toggleAutoDownload() {
+            const toggle = document.getElementById('autoDownloadToggle');
+            toggle.classList.toggle('bg-primary');
+            toggle.classList.toggle('bg-gray-200');
+            const span = toggle.querySelector('span');
+            span.classList.toggle('translate-x-6');
+            span.classList.toggle('translate-x-1');
+            showToast('Descarga automática actualizada');
+        }
+
+        function toggleAnalytics() {
+            const toggle = document.getElementById('analyticsToggle');
+            toggle.classList.toggle('bg-primary');
+            toggle.classList.toggle('bg-gray-200');
+            const span = toggle.querySelector('span');
+            span.classList.toggle('translate-x-6');
+            span.classList.toggle('translate-x-1');
+            showToast('Datos de uso actualizados');
+        }
+
+        function toggleLocation() {
+            const toggle = document.getElementById('locationToggle');
+            toggle.classList.toggle('bg-primary');
+            toggle.classList.toggle('bg-gray-200');
+            const span = toggle.querySelector('span');
+            span.classList.toggle('translate-x-6');
+            span.classList.toggle('translate-x-1');
+            showToast('Ubicación actualizada');
+        }
+
+        function checkUpdates() {
+            showToast('La app está actualizada ✓');
+        }
+
+        function deleteAccount() {
+            if (confirm('¿Estás seguro? Esta acción no se puede deshacer.')) {
+                showToast('Procesando eliminación de cuenta...');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
+
+</body>
+</html>

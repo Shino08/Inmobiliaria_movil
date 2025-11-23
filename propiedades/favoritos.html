@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Favoritos - B&D</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.3s ease; }
+        
+        @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .animate-heart { animation: heartBeat 0.3s ease; }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button onclick="goBack()" class="flex h-10 w-10 items-center justify-center rounded-xl hover:bg-gray-100 transition-colors">
+                    <span class="material-symbols-outlined text-gray-800">arrow_back</span>
+                </button>
+                <div>
+                    <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Mis Favoritos</h1>
+                    <p class="text-gray-500 text-xs"><span id="favCount">0</span> propiedades guardadas</p>
+                </div>
+            </div>
+
+            <button onclick="clearAll()" id="clearBtn" class="hidden text-primary text-sm font-semibold hover:text-primary-dark transition">
+                Limpiar todo
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="pt-20 pb-20 px-4 max-w-2xl mx-auto">
+        
+        <!-- Grid de favoritos -->
+        <div id="favoritesGrid" class="grid grid-cols-1 gap-4">
+            <!-- Las propiedades favoritas se cargan dinámicamente -->
+        </div>
+
+        <!-- Estado vacío -->
+        <div id="emptyState" class="flex flex-col items-center justify-center py-20">
+            <div class="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-gray-400 text-5xl">favorite_border</span>
+            </div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-xl font-bold mb-2">No tienes favoritos aún</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm text-center mb-6 max-w-xs">
+                Explora propiedades y guarda tus favoritas para verlas aquí
+            </p>
+            <a href="search-page.html" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold shadow-lg hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined">search</span>
+                <span>Buscar propiedades</span>
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-2 glass border-t border-gray-200/50 h-16">
+        <a href="map-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all">
+            <span class="material-symbols-outlined text-lg">map</span>
+            <span class="text-xs font-medium">Mapa</span>
+        </a>
+        <a href="search-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all">
+            <span class="material-symbols-outlined text-lg">search</span>
+            <span class="text-xs font-medium">Buscar</span>
+        </a>
+        <a href="favorites-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-primary">
+            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">favorite</span>
+            <span class="text-xs font-bold">Favoritos</span>
+        </a>
+        <button onclick="contactAgent()" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all">
+            <span class="material-symbols-outlined text-lg">support_agent</span>
+            <span class="text-xs font-medium">Contacto</span>
+        </button>
+        <a href="profile-page.html" class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all">
+            <span class="material-symbols-outlined text-lg">person</span>
+            <span class="text-xs font-medium">Perfil</span>
+        </a>
+    </nav>
+
+    <script>
+        const allProperties = [
+            { id: 1, price: 750000, address: '123 Maple St', location: 'San Francisco, CA', beds: 3, baths: 2, sqft: 2150, image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
+            { id: 2, price: 450000, address: '456 Oak Ave', location: 'Oakland, CA', beds: 2, baths: 1.5, sqft: 1650, image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80' },
+            { id: 3, price: 1200000, address: '789 Pine Rd', location: 'Berkeley, CA', beds: 4, baths: 3, sqft: 3200, image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80' }
+        ];
+
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+        function renderFavorites() {
+            const grid = document.getElementById('favoritesGrid');
+            const emptyState = document.getElementById('emptyState');
+            const clearBtn = document.getElementById('clearBtn');
+            const favCount = document.getElementById('favCount');
+
+            const favoriteProperties = allProperties.filter(p => favorites.includes(p.id));
+            
+            favCount.textContent = favoriteProperties.length;
+
+            if (favoriteProperties.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                clearBtn.classList.add('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            clearBtn.classList.remove('hidden');
+
+            grid.innerHTML = favoriteProperties.map((prop) => `
+                <div class="animate-fade-in">
+                    <a href="details-page.html?id=${prop.id}" class="flex gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
+                        <div class="relative w-28 h-28 shrink-0 rounded-xl bg-cover bg-center" style="background-image: url('${prop.image}');">
+                            <button onclick="removeFavorite(${prop.id}, event)" class="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full glass shadow-md hover:scale-110 transition-all">
+                                <span class="material-symbols-outlined text-sm text-primary animate-heart" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                            </button>
+                        </div>
+
+                        <div class="flex-1 flex flex-col justify-between min-w-0">
+                            <div>
+                                <p class="text-gray-900 dark:text-gray-100 text-xl font-bold mb-1">$${prop.price.toLocaleString()}</p>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm font-semibold mb-1 truncate">${prop.address}</p>
+                                <p class="text-gray-500 text-xs">${prop.location}</p>
+                            </div>
+
+                            <div class="flex items-center gap-3 text-gray-600">
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">bed</span>
+                                    <span class="text-xs font-bold">${prop.beds}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">bathtub</span>
+                                    <span class="text-xs font-bold">${prop.baths}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">square_foot</span>
+                                    <span class="text-xs font-bold">${prop.sqft}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function removeFavorite(id, event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const index = favorites.indexOf(id);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                showToast('Eliminado de favoritos');
+                renderFavorites();
+            }
+        }
+
+        function clearAll() {
+            if (confirm('¿Eliminar todos los favoritos?')) {
+                favorites = [];
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                showToast('Favoritos eliminados');
+                renderFavorites();
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function contactAgent() {
+            showToast('Conectando con agente...');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 text-sm font-semibold z-50 animate-fade-in';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFavorites();
+        });
+
+        // Listener para cambios en localStorage (sincronización entre pestañas)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'favorites') {
+                favorites = JSON.parse(e.newValue || '[]');
+                renderFavorites();
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Mis Visitas - Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { min-height: 100vh; overscroll-behavior: none; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        .dark .glass { background: rgba(42, 42, 40, 0.95); }
+    </style>
+</head>
+
+<body class="font-display bg-gray-50 dark:bg-gray-900">
+    
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50 h-16">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Mis Visitas</h1>
+        </div>
+        <button onclick="newVisit()" class="flex h-10 px-4 items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold shadow-md hover:scale-105 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-lg">add</span>
+            <span>Nueva</span>
+        </button>
+    </header>
+    
+    <div class="pt-20 pb-6 px-4">
+        
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6">
+            <button onclick="showTab('upcoming')" id="upcomingTab" class="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold">
+                Próximas (2)
+            </button>
+            <button onclick="showTab('past')" id="pastTab" class="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-semibold">
+                Pasadas (3)
+            </button>
+        </div>
+        
+        <!-- Upcoming Visits -->
+        <div id="upcomingVisits" class="space-y-4">
+            
+            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md">
+                <div class="h-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80');"></div>
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-xl font-bold mb-1">$750,000</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-semibold mb-1">123 Maple Street</p>
+                            <p class="text-gray-500 text-xs">San Francisco, CA</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-bold">Confirmada</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 py-3 px-4 rounded-xl bg-primary/5 mb-3">
+                        <div class="flex items-center gap-2 text-primary">
+                            <span class="material-symbols-outlined text-lg">event</span>
+                            <span class="text-sm font-bold">Sáb, 25 Nov</span>
+                        </div>
+                        <div class="h-4 w-px bg-primary/20"></div>
+                        <div class="flex items-center gap-2 text-primary">
+                            <span class="material-symbols-outlined text-lg">schedule</span>
+                            <span class="text-sm font-bold">3:00 PM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="reschedule()" class="flex-1 h-11 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-200 transition-all">
+                            Reagendar
+                        </button>
+                        <button onclick="cancelVisit()" class="flex-1 h-11 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-bold hover:bg-red-100 transition-all">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md">
+                <div class="h-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80');"></div>
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-xl font-bold mb-1">$650,000</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-semibold mb-1">456 Oak Avenue</p>
+                            <p class="text-gray-500 text-xs">Oakland, CA</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 text-xs font-bold">Pendiente</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 py-3 px-4 rounded-xl bg-primary/5 mb-3">
+                        <div class="flex items-center gap-2 text-primary">
+                            <span class="material-symbols-outlined text-lg">event</span>
+                            <span class="text-sm font-bold">Dom, 26 Nov</span>
+                        </div>
+                        <div class="h-4 w-px bg-primary/20"></div>
+                        <div class="flex items-center gap-2 text-primary">
+                            <span class="material-symbols-outlined text-lg">schedule</span>
+                            <span class="text-sm font-bold">11:00 AM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="reschedule()" class="flex-1 h-11 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-200 transition-all">
+                            Reagendar
+                        </button>
+                        <button onclick="cancelVisit()" class="flex-1 h-11 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-bold hover:bg-red-100 transition-all">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Past Visits (Hidden by default) -->
+        <div id="pastVisits" class="hidden space-y-4">
+            
+            <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md opacity-75">
+                <div class="h-32 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80');"></div>
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex-1">
+                            <p class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-1">$890,000</p>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">789 Pine Road</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-gray-500/10 text-gray-600 dark:text-gray-400 text-xs font-bold">Completada</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 text-gray-500 text-xs mb-3">
+                        <span>📅 20 Nov 2025</span>
+                        <span>🕐 2:00 PM</span>
+                    </div>
+                    
+                    <button onclick="viewDetails()" class="w-full h-10 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-200 transition-all">
+                        Ver Detalles
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+    <script>
+        function goBack() { window.history.back(); }
+        function newVisit() { window.location.href = 'agendar-visita.html'; }
+        function reschedule() { alert('Reagendar visita'); }
+        function cancelVisit() { if(confirm('¿Cancelar esta visita?')) alert('Visita cancelada'); }
+        function viewDetails() { alert('Ver detalles de la visita'); }
+        
+        function showTab(tab) {
+            const upcomingTab = document.getElementById('upcomingTab');
+            const pastTab = document.getElementById('pastTab');
+            const upcomingVisits = document.getElementById('upcomingVisits');
+            const pastVisits = document.getElementById('pastVisits');
+            
+            if (tab === 'upcoming') {
+                upcomingTab.className = 'flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold';
+                pastTab.className = 'flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-semibold';
+                upcomingVisits.classList.remove('hidden');
+                pastVisits.classList.add('hidden');
+            } else {
+                pastTab.className = 'flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold';
+                upcomingTab.className = 'flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-semibold';
+                pastVisits.classList.remove('hidden');
+                upcomingVisits.classList.add('hidden');
+            }
+        }
+    </script>
+    
+</body>
+</html>

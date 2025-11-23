@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Notificaciones - B&D</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Notificaciones</h1>
+        </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="pt-20 pb-6 px-4 max-w-2xl mx-auto space-y-6">
+        
+        <!-- Push notifications -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">Notificaciones Push</h3>
+            </div>
+            
+            <button onclick="toggleSetting('push1')" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">real_estate_agent</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Nuevas propiedades</p>
+                        <p class="text-gray-500 text-xs">Propiedades que coinciden con tu búsqueda</p>
+                    </div>
+                </div>
+                <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary transition-colors" id="push1">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform translate-x-6"></span>
+                </div>
+            </button>
+
+            <button onclick="toggleSetting('push2')" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">monetization_on</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Cambios de precio</p>
+                        <p class="text-gray-500 text-xs">Alertas de bajadas de precio</p>
+                    </div>
+                </div>
+                <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary transition-colors" id="push2">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform translate-x-6"></span>
+                </div>
+            </button>
+
+            <button onclick="toggleSetting('push3')" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">schedule</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Recordatorios de visitas</p>
+                        <p class="text-gray-500 text-xs">Avisos antes de tus citas</p>
+                    </div>
+                </div>
+                <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition-colors" id="push3">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform translate-x-1"></span>
+                </div>
+            </button>
+        </div>
+
+        <!-- Email notifications -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">Notificaciones por Email</h3>
+            </div>
+            
+            <button onclick="toggleSetting('email1')" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-blue-600">email</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Resumen semanal</p>
+                        <p class="text-gray-500 text-xs">Propiedades destacadas cada semana</p>
+                    </div>
+                </div>
+                <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary transition-colors" id="email1">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform translate-x-6"></span>
+                </div>
+            </button>
+
+            <button onclick="toggleSetting('email2')" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-blue-600">campaign</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Ofertas promocionales</p>
+                        <p class="text-gray-500 text-xs">Descuentos y ofertas especiales</p>
+                    </div>
+                </div>
+                <div class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition-colors" id="email2">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform translate-x-1"></span>
+                </div>
+            </button>
+        </div>
+
+        <!-- Configuración avanzada -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">Configuración Avanzada</h3>
+            </div>
+            
+            <button onclick="setQuietHours()" class="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-purple-600">bedtime</span>
+                    <div class="text-left">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold">Horario silencioso</p>
+                        <p class="text-gray-500 text-xs">22:00 - 08:00</p>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function toggleSetting(id) {
+            const toggle = document.getElementById(id);
+            toggle.classList.toggle('bg-primary');
+            toggle.classList.toggle('bg-gray-200');
+            const span = toggle.querySelector('span');
+            span.classList.toggle('translate-x-6');
+            span.classList.toggle('translate-x-1');
+        }
+
+        function setQuietHours() {
+            showToast('Configurar horario silencioso');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
+
+</body>
+</html>

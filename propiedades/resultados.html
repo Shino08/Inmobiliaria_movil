@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Resultados de Búsqueda - Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { min-height: 100vh; overscroll-behavior: none; -webkit-font-smoothing: antialiased; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; }
+        .glass { background: rgba(84, 80, 80, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        .dark .glass { background: rgba(42, 42, 40, 0.95); }
+    </style>
+</head>
+
+<body class="font-display bg-gray-50 dark:bg-gray-900">
+    
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+        <div class="flex items-center gap-3 mb-3">
+            <button onclick="goBack()" class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            
+            <div class="flex-1 flex items-center rounded-2xl bg-gray-100 dark:bg-gray-800 h-11 px-4 gap-3">
+                <span class="material-symbols-outlined text-primary text-lg">search</span>
+                <input 
+                    id="searchInput" 
+                    type="text" 
+                    value="San Francisco, CA"
+                    placeholder="Buscar ubicación..." 
+                    class="flex-1 bg-transparent text-gray-900 dark:text-gray-100 text-sm focus:outline-none border-none p-0"
+                />
+            </div>
+            
+            <button onclick="toggleFilters()" class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 transition-all">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">tune</span>
+            </button>
+        </div>
+        
+        <div class="flex items-center justify-between">
+            <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold"><span class="text-primary">24</span> propiedades encontradas</p>
+            
+            <select class="px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-xs font-semibold focus:outline-none">
+                <option>Más recientes</option>
+                <option>Precio: menor a mayor</option>
+                <option>Precio: mayor a menor</option>
+                <option>Más relevantes</option>
+            </select>
+        </div>
+    </header>
+    
+    <div class="pt-32 pb-6 px-4 space-y-4">
+        
+        <!-- Property Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+            <div class="relative">
+                <div class="h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80');"></div>
+                <button onclick="toggleFavorite(this)" class="absolute top-3 right-3 flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-110 transition-all">
+                    <span class="material-symbols-outlined text-xl text-gray-700 dark:text-gray-300">favorite_border</span>
+                </button>
+                <div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg bg-gray-900/80 text-white text-xs font-bold">
+                    Nueva
+                </div>
+            </div>
+            <div class="p-4">
+                <p class="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-1">$750,000</p>
+                <p class="text-gray-600 dark:text-gray-400 text-base font-semibold mb-1">123 Maple Street</p>
+                <div class="flex items-center gap-1.5 mb-3">
+                    <span class="material-symbols-outlined text-gray-400 text-sm">location_on</span>
+                    <p class="text-gray-500 text-sm">San Francisco, CA • 2.4 km</p>
+                </div>
+                
+                <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    <span>🛏️ 3 hab</span>
+                    <span>🛁 2 baños</span>
+                    <span>📏 2,150 m²</span>
+                </div>
+                
+                <button onclick="viewProperty()" class="w-full h-11 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold shadow-md hover:scale-105 transition-all">
+                    Ver Detalles
+                </button>
+            </div>
+        </div>
+        
+        <!-- Property Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+            <div class="relative">
+                <div class="h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80');"></div>
+                <button onclick="toggleFavorite(this)" class="absolute top-3 right-3 flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-110 transition-all">
+                    <span class="material-symbols-outlined text-xl text-primary" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                </button>
+                <div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg bg-green-600/90 text-white text-xs font-bold">
+                    -5% Precio
+                </div>
+            </div>
+            <div class="p-4">
+                <p class="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-1">$650,000</p>
+                <p class="text-gray-600 dark:text-gray-400 text-base font-semibold mb-1">456 Oak Avenue</p>
+                <div class="flex items-center gap-1.5 mb-3">
+                    <span class="material-symbols-outlined text-gray-400 text-sm">location_on</span>
+                    <p class="text-gray-500 text-sm">Oakland, CA • 5.1 km</p>
+                </div>
+                
+                <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    <span>🛏️ 3 hab</span>
+                    <span>🛁 2.5 baños</span>
+                    <span>📏 1,950 m²</span>
+                </div>
+                
+                <button onclick="viewProperty()" class="w-full h-11 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold shadow-md hover:scale-105 transition-all">
+                    Ver Detalles
+                </button>
+            </div>
+        </div>
+        
+        <!-- Property Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+            <div class="relative">
+                <div class="h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80');"></div>
+                <button onclick="toggleFavorite(this)" class="absolute top-3 right-3 flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-110 transition-all">
+                    <span class="material-symbols-outlined text-xl text-gray-700 dark:text-gray-300">favorite_border</span>
+                </button>
+            </div>
+            <div class="p-4">
+                <p class="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-1">$890,000</p>
+                <p class="text-gray-600 dark:text-gray-400 text-base font-semibold mb-1">789 Pine Road</p>
+                <div class="flex items-center gap-1.5 mb-3">
+                    <span class="material-symbols-outlined text-gray-400 text-sm">location_on</span>
+                    <p class="text-gray-500 text-sm">Berkeley, CA • 8.3 km</p>
+                </div>
+                
+                <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    <span>🛏️ 4 hab</span>
+                    <span>🛁 3 baños</span>
+                    <span>📏 2,800 m²</span>
+                </div>
+                
+                <button onclick="viewProperty()" class="w-full h-11 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold shadow-md hover:scale-105 transition-all">
+                    Ver Detalles
+                </button>
+            </div>
+        </div>
+        
+        <!-- Load More -->
+        <button onclick="loadMore()" class="w-full h-12 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-200 transition-all">
+            Cargar más resultados
+        </button>
+        
+    </div>
+    
+    <script>
+        function goBack() { window.history.back(); }
+        function toggleFilters() { alert('Abrir filtros'); }
+        function viewProperty() { alert('Ver detalles de la propiedad'); }
+        function loadMore() { alert('Cargando más resultados...'); }
+        
+        function toggleFavorite(btn) {
+            const icon = btn.querySelector('.material-symbols-outlined');
+            const isFavorite = icon.style.fontVariationSettings === "'FILL' 1";
+            
+            if (isFavorite) {
+                icon.style.fontVariationSettings = "'FILL' 0";
+                icon.className = 'material-symbols-outlined text-xl text-gray-700 dark:text-gray-300';
+            } else {
+                icon.style.fontVariationSettings = "'FILL' 1";
+                icon.className = 'material-symbols-outlined text-xl text-primary';
+            }
+        }
+    </script>
+    
+</body>
+</html>

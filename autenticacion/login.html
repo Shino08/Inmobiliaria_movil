@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" name="viewport" />
+    <title>Iniciar Sesión - B&D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', system-ui, sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #f5f5f5 0%, #efefef 100%);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .gradient-brand { background: linear-gradient(135deg, #f15a29 0%, #d94e1f 100%); }
+        
+        .input-field { transition: all 0.3s ease; }
+        .input-field:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(241, 90, 41, 0.15);
+        }
+
+        .btn-login { position: relative; overflow: hidden; }
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+        .btn-login:active::before { left: 100%; }
+
+        .checkbox-custom {
+            appearance: none; -webkit-appearance: none;
+            width: 20px; height: 20px;
+            border: 2px solid #f15a29; border-radius: 4px;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .checkbox-custom:checked {
+            background: linear-gradient(135deg, #f15a29, #d94e1f);
+            border-color: #f15a29;
+        }
+        .checkbox-custom:checked::after {
+            content: '✓'; display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: bold;
+        }
+
+        .divider-line { background: linear-gradient(90deg, transparent, #f15a29, transparent); }
+    </style>
+</head>
+<body>
+    
+    <div class="min-h-screen flex items-center justify-center px-4 py-8">
+        <div class="w-full max-w-md">
+            <div class="bg-white p-8 lg:p-12 rounded-2xl shadow-2xl">
+                <!-- Decoración superior -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl gradient-brand mb-4">
+                        <i class="fas fa-building text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl lg:text-4xl font-black text-gray-900 mb-2">
+                        Iniciar sesión
+                    </h2>
+                    <p class="text-gray-600 text-base font-medium">
+                        Ingresa tus credenciales para acceder
+                    </p>
+                </div>
+
+                <!-- Formulario -->
+                <form class="space-y-5 mb-8" onsubmit="handleLogin(event)">
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">
+                            Correo electrónico
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input 
+                                type="email" 
+                                id="email"
+                                placeholder="nombre@ejemplo.com"
+                                class="input-field w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 bg-gray-50 focus:bg-white transition duration-300 text-sm"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-800 mb-2">
+                            Contraseña
+                        </label>
+                        <div class="relative group">
+                            <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input 
+                                type="password" 
+                                id="password"
+                                placeholder="••••••••"
+                                class="input-field w-full pl-11 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 bg-gray-50 focus:bg-white transition duration-300 text-sm"
+                                required
+                            >
+                            <button 
+                                type="button"
+                                onclick="togglePassword()"
+                                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                            >
+                                <i id="eyeIcon" class="fas fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recuérdame y Olvidé contraseña -->
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input 
+                                type="checkbox" 
+                                class="checkbox-custom"
+                            >
+                            <span class="text-sm text-gray-600 font-medium group-hover:text-orange-500 transition">
+                                Recuérdame
+                            </span>
+                        </label>
+                        <a href="#" class="text-sm text-orange-500 hover:text-orange-600 font-semibold transition">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+
+                    <!-- Botón Principal -->
+                    <button 
+                        type="submit"
+                        class="btn-login w-full gradient-brand text-white font-bold py-3 rounded-xl text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 relative mt-8"
+                    >
+                        <span class="relative z-10 flex items-center justify-center gap-2">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Iniciar sesión
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Divisor -->
+                <div class="flex items-center gap-3 my-8">
+                    <div class="divider-line flex-1 h-px"></div>
+                    <span class="text-xs text-gray-500 font-medium">¿No tienes cuenta?</span>
+                    <div class="divider-line flex-1 h-px"></div>
+                </div>
+
+                <!-- Botón de registro -->
+                <a 
+                    href="register.html" 
+                    class="w-full inline-flex items-center justify-center gap-2 py-3 border-2 border-gray-200 rounded-xl text-sm font-semibold text-gray-700 hover:text-orange-600 hover:border-orange-300 hover:bg-orange-50 transition duration-300"
+                >
+                    <i class="fas fa-user-plus"></i>
+                    Crear cuenta nueva
+                </a>
+
+                <!-- Texto de soporte -->
+                <div class="bg-orange-50 border-l-4 border-orange-500 rounded-r-lg p-4 my-6">
+                    <p class="text-xs text-gray-700 font-medium">
+                        <i class="fas fa-info-circle text-orange-500 mr-2"></i>
+                        ¿Problemas para iniciar sesión?
+                        <a href="#" class="text-orange-600 hover:text-orange-700 font-bold transition">
+                            Contactar soporte
+                        </a>
+                    </p>
+                </div>
+
+                <!-- Pie de página -->
+                <div class="text-center text-xs text-gray-500">
+                    <p class="font-medium">
+                        v2.0 | © 2025 Corporación B&D
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Aquí va tu lógica de autenticación
+            console.log('Login:', { email, password });
+            
+            // Ejemplo de redirección
+            // window.location.href = 'dashboard.html';
+        }
+
+        // Animación de foco en inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('ring-2', 'ring-orange-200');
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('ring-2', 'ring-orange-200');
+            });
+        });
+    </script>
+
+</body>
+</html>

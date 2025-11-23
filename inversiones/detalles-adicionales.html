@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Detalle de Inversión - MEA</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        .dark .glass { background: rgba(42, 42, 40, 0.95); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .image-gallery { scroll-snap-type: x mandatory; scroll-behavior: smooth; }
+        .image-gallery img { scroll-snap-align: start; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-up { animation: slideUp 0.4s ease; }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header flotante -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3">
+        <button onclick="goBack()" class="flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+            <button onclick="shareInvestment()" class="flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">share</span>
+            </button>
+            <button onclick="toggleSaveInvestment()" id="saveBtn" class="flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200" id="saveIcon">bookmark_border</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Galería de imágenes -->
+    <div class="relative">
+        <div id="imageGallery" class="image-gallery flex overflow-x-auto no-scrollbar">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80" alt="Imagen 1" class="w-full h-[50vh] object-cover flex-shrink-0" />
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80" alt="Imagen 2" class="w-full h-[50vh] object-cover flex-shrink-0" />
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80" alt="Imagen 3" class="w-full h-[50vh] object-cover flex-shrink-0" />
+        </div>
+
+        <!-- Indicadores -->
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+            <div class="indicator w-2 h-2 rounded-full bg-white shadow-md opacity-100"></div>
+            <div class="indicator w-2 h-2 rounded-full bg-white/50 shadow-md"></div>
+            <div class="indicator w-2 h-2 rounded-full bg-white/50 shadow-md"></div>
+        </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="relative -mt-6 bg-white dark:bg-gray-900 rounded-t-3xl shadow-2xl animate-slide-up">
+        <div class="px-6 pt-6 pb-32">
+            
+            <!-- Badge de estado -->
+            <div class="flex items-center gap-2 mb-4">
+                <span class="px-3 py-1.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-bold">
+                    Disponible
+                </span>
+                <span class="px-3 py-1.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-bold">
+                    Riesgo Medio
+                </span>
+            </div>
+
+            <!-- Título -->
+            <h1 class="text-gray-900 dark:text-gray-100 text-2xl font-black mb-2">Casa Residencial en Downtown</h1>
+            <div class="flex items-center gap-2 mb-6">
+                <span class="material-symbols-outlined text-primary text-lg">location_on</span>
+                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">San Francisco, CA 94103</p>
+            </div>
+
+            <!-- Stats principales -->
+            <div class="grid grid-cols-3 gap-3 mb-6 p-4 bg-gradient-to-br from-primary/5 to-primary-dark/5 rounded-2xl border border-primary/20">
+                <div class="text-center">
+                    <p class="text-primary text-2xl font-black mb-1">14.2%</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-xs font-semibold">ROI Anual</p>
+                </div>
+                <div class="text-center border-x border-primary/20">
+                    <p class="text-gray-900 dark:text-gray-100 text-2xl font-black mb-1">$85K</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-xs font-semibold">Inversión mín.</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-900 dark:text-gray-100 text-2xl font-black mb-1">18</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-xs font-semibold">Meses</p>
+                </div>
+            </div>
+
+            <!-- Progreso de financiamiento -->
+            <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Financiamiento</span>
+                    <span class="text-primary text-sm font-bold">45% completado</span>
+                </div>
+                <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-primary to-primary-dark w-[45%] transition-all"></div>
+                </div>
+                <div class="flex items-center justify-between mt-2">
+                    <span class="text-gray-500 text-xs">$382,500 financiados</span>
+                    <span class="text-gray-500 text-xs">$850,000 objetivo</span>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-6">
+                <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-3">Descripción de la Inversión</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-3">
+                    Propiedad residencial de alto valor en una de las zonas más cotizadas de San Francisco. Excelente oportunidad para inversionistas que buscan retornos atractivos en el corto-medio plazo.
+                </p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                    La propiedad cuenta con 3 habitaciones, 2 baños, garaje para 2 vehículos y un amplio jardín. Ubicada a 5 minutos del distrito financiero y cerca de escuelas de prestigio.
+                </p>
+            </div>
+
+            <!-- Características de inversión -->
+            <div class="mb-6">
+                <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-3">Características</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                        <span class="material-symbols-outlined text-primary">trending_up</span>
+                        <div>
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Plusvalía</p>
+                            <p class="text-gray-500 text-xs">8% anual</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                        <span class="material-symbols-outlined text-primary">payments</span>
+                        <div>
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Renta mensual</p>
+                            <p class="text-gray-500 text-xs">$4,200</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                        <span class="material-symbols-outlined text-primary">verified</span>
+                        <div>
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Garantía</p>
+                            <p class="text-gray-500 text-xs">Respaldada</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                        <span class="material-symbols-outlined text-primary">schedule</span>
+                        <div>
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Liquidez</p>
+                            <p class="text-gray-500 text-xs">18 meses</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proyección financiera -->
+            <div class="mb-6 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
+                <h3 class="text-gray-900 dark:text-gray-100 text-base font-bold mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-600">analytics</span>
+                    Proyección con $85,000
+                </h3>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">Retorno estimado (18 meses)</span>
+                        <span class="text-gray-900 dark:text-gray-100 text-sm font-bold">$12,070</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600 dark:text-gray-400 text-sm">Total al vencimiento</span>
+                        <span class="text-blue-600 text-base font-black">$97,070</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asesor -->
+            <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                <h3 class="text-gray-900 dark:text-gray-100 text-base font-bold mb-3">Asesor de Inversión</h3>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white text-lg font-bold shadow-md">
+                        MC
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">María Contreras</p>
+                        <p class="text-gray-500 text-xs">Especialista en Inversiones</p>
+                    </div>
+                    <button onclick="contactAdvisor()" class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white shadow-md hover:scale-105 transition-transform">
+                        <span class="material-symbols-outlined text-lg">chat</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom Action Bar -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 px-6 py-4 glass border-t border-gray-200/50">
+        <div class="flex items-center gap-3">
+            <button onclick="calculateROI()" class="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-all">
+                <span class="material-symbols-outlined">calculate</span>
+                <span>Calcular</span>
+            </button>
+            <button onclick="invest()" class="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold shadow-lg hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined">payments</span>
+                <span>Invertir</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let isSaved = false;
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function toggleSaveInvestment() {
+            isSaved = !isSaved;
+            const icon = document.getElementById('saveIcon');
+            
+            if (isSaved) {
+                icon.textContent = 'bookmark';
+                icon.style.fontVariationSettings = "'FILL' 1";
+                showToast('Guardado en favoritos');
+            } else {
+                icon.textContent = 'bookmark_border';
+                icon.style.fontVariationSettings = "'FILL' 0";
+                showToast('Eliminado de favoritos');
+            }
+        }
+
+        function shareInvestment() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Oportunidad de Inversión',
+                    text: 'Mira esta oportunidad de inversión inmobiliaria',
+                    url: window.location.href
+                });
+            } else {
+                showToast('Compartir no disponible');
+            }
+        }
+
+        function contactAdvisor() {
+            window.location.href = 'messages-page.html?advisor=maria';
+        }
+
+        function calculateROI() {
+            window.location.href = 'calculator-page.html?investment=1';
+        }
+
+        function invest() {
+            showToast('Procesando inversión...');
+            setTimeout(() => {
+                window.location.href = 'investment-checkout.html?id=1';
+            }, 1500);
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-28 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const investmentId = urlParams.get('id');
+            console.log('Cargando inversión:', investmentId);
+        });
+    </script>
+
+</body>
+</html>

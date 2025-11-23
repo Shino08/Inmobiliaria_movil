@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Mis Visitas - MEA</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fadeIn 0.3s ease; }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-gray-100 transition-colors">
+                    <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+                </button>
+                <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Mis Visitas</h1>
+            </div>
+            <button onclick="addTour()" class="flex items-center gap-1 px-3 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition-all">
+                <span class="material-symbols-outlined text-lg">add</span>
+                <span>Nueva</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="fixed top-16 left-0 right-0 z-40 px-4 pt-2 pb-3 glass border-b border-gray-200/50">
+        <div class="flex gap-2">
+            <button onclick="filterTours('upcoming')" class="tour-tab px-4 py-2 rounded-lg bg-primary text-white text-sm font-bold" data-tab="upcoming">
+                Próximas
+            </button>
+            <button onclick="filterTours('completed')" class="tour-tab px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-semibold" data-tab="completed">
+                Completadas
+            </button>
+            <button onclick="filterTours('cancelled')" class="tour-tab px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-semibold" data-tab="cancelled">
+                Canceladas
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenido -->
+    <main class="pt-32 pb-6 px-4">
+        <div id="toursContainer" class="space-y-4">
+            <!-- Las visitas se cargan dinámicamente -->
+        </div>
+
+        <!-- Estado vacío -->
+        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20">
+            <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-gray-400 text-4xl">event_busy</span>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 text-base font-semibold mb-2">No tienes visitas programadas</p>
+            <button onclick="addTour()" class="mt-4 px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-primary-dark transition-all">
+                Programar una visita
+            </button>
+        </div>
+    </main>
+
+    <script>
+        const tours = [
+            {
+                id: 1,
+                property: 'Casa Moderna Downtown',
+                address: '123 Maple St, San Francisco',
+                date: '2025-11-15',
+                time: '10:00 AM',
+                status: 'upcoming',
+                agent: 'Carlos Méndez',
+                image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80',
+                type: 'Presencial'
+            },
+            {
+                id: 2,
+                property: 'Apartamento Vista al Mar',
+                address: '456 Ocean Ave, Palo Alto',
+                date: '2025-11-16',
+                time: '3:00 PM',
+                status: 'upcoming',
+                agent: 'Ana Torres',
+                image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80',
+                type: 'Virtual'
+            },
+            {
+                id: 3,
+                property: 'Villa Exclusiva Miramar',
+                address: '789 Pine Rd, Berkeley',
+                date: '2025-11-10',
+                time: '11:30 AM',
+                status: 'completed',
+                agent: 'Luis Ramírez',
+                image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80',
+                type: 'Presencial'
+            },
+            {
+                id: 4,
+                property: 'Casa Familiar Moderna',
+                address: '321 Elm Blvd, San Jose',
+                date: '2025-11-08',
+                time: '2:00 PM',
+                status: 'cancelled',
+                agent: 'María González',
+                image: 'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=400&q=80',
+                type: 'Presencial'
+            }
+        ];
+
+        let currentFilter = 'upcoming';
+
+        function renderTours(filter = 'upcoming') {
+            const container = document.getElementById('toursContainer');
+            const emptyState = document.getElementById('emptyState');
+            
+            const filtered = tours.filter(t => t.status === filter);
+
+            if (filtered.length === 0) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            container.innerHTML = filtered.map(tour => {
+                const statusColors = {
+                    upcoming: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                    completed: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                    cancelled: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                };
+
+                const statusText = {
+                    upcoming: 'Próxima',
+                    completed: 'Completada',
+                    cancelled: 'Cancelada'
+                };
+
+                return `
+                    <div class="animate-fade-in">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
+                            <div class="flex gap-4 p-4">
+                                <div class="w-24 h-24 rounded-xl bg-cover bg-center flex-shrink-0" style="background-image: url('${tour.image}');"></div>
+                                
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start justify-between gap-2 mb-2">
+                                        <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold">${tour.property}</h3>
+                                        <span class="px-2 py-1 rounded-md ${statusColors[tour.status]} text-xs font-bold whitespace-nowrap">
+                                            ${statusText[tour.status]}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="space-y-1 mb-3">
+                                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs">
+                                            <span class="material-symbols-outlined text-sm">location_on</span>
+                                            <span class="truncate">${tour.address}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs">
+                                            <span class="material-symbols-outlined text-sm">schedule</span>
+                                            <span>${tour.date} -  ${tour.time}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs">
+                                            <span class="material-symbols-outlined text-sm">person</span>
+                                            <span>${tour.agent}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-2">
+                                        ${tour.status === 'upcoming' ? `
+                                            <button onclick="reschedule(${tour.id})" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-xs font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+                                                Reprogramar
+                                            </button>
+                                            <button onclick="cancelTour(${tour.id})" class="flex-1 px-3 py-2 rounded-lg bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition-all">
+                                                Cancelar
+                                            </button>
+                                        ` : tour.status === 'completed' ? `
+                                            <button onclick="viewProperty(${tour.id})" class="flex-1 px-3 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-all">
+                                                Ver propiedad
+                                            </button>
+                                        ` : `
+                                            <button onclick="reschedule(${tour.id})" class="flex-1 px-3 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition-all">
+                                                Programar de nuevo
+                                            </button>
+                                        `}
+                                    </div>
+                                </div>
+                            </div>
+
+                            ${tour.status === 'upcoming' ? `
+                                <div class="px-4 py-3 bg-primary/5 border-t border-primary/20">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-primary text-sm">${tour.type === 'Virtual' ? 'videocam' : 'directions_walk'}</span>
+                                            <span class="text-gray-700 dark:text-gray-300 text-xs font-semibold">${tour.type}</span>
+                                        </div>
+                                        <button onclick="getDirections(${tour.id})" class="flex items-center gap-1 text-primary text-xs font-semibold hover:text-primary-dark transition">
+                                            <span class="material-symbols-outlined text-sm">directions</span>
+                                            <span>Cómo llegar</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterTours(filter) {
+            currentFilter = filter;
+
+            document.querySelectorAll('.tour-tab').forEach(tab => {
+                if (tab.dataset.tab === filter) {
+                    tab.classList.remove('bg-gray-100', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+                    tab.classList.add('bg-primary', 'text-white');
+                } else {
+                    tab.classList.remove('bg-primary', 'text-white');
+                    tab.classList.add('bg-gray-100', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+                }
+            });
+
+            renderTours(filter);
+        }
+
+        function addTour() {
+            showToast('Programar visita próximamente');
+        }
+
+        function reschedule(id) {
+            showToast('Reprogramando visita...');
+        }
+
+        function cancelTour(id) {
+            if (confirm('¿Cancelar esta visita?')) {
+                showToast('Visita cancelada');
+            }
+        }
+
+        function viewProperty(id) {
+            window.location.href = 'details-page.html?id=' + id;
+        }
+
+        function getDirections(id) {
+            showToast('Abriendo direcciones...');
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+            renderTours();
+        });
+    </script>
+
+</body>
+</html>

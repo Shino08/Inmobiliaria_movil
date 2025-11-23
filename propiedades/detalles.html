@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Detalles de Propiedad</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #FFFFFF; overflow-x: hidden; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+        .dark .glass { background: rgba(42, 42, 40, 0.95); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .image-gallery { scroll-snap-type: x mandatory; scroll-behavior: smooth; }
+        .image-gallery img { scroll-snap-align: start; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-up { animation: slideUp 0.4s ease; }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header flotante -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3">
+        <button onclick="goBack()" class="flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-105 transition-transform">
+            <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+            <button onclick="shareProperty()" class="flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">share</span>
+            </button>
+            <button onclick="toggleFavorite()" id="favoriteBtn" class="flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200" id="favoriteIcon">favorite_border</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Galería de imágenes -->
+    <div class="relative">
+        <div id="imageGallery" class="image-gallery flex overflow-x-auto no-scrollbar">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80" alt="Imagen 1" class="w-full h-[60vh] object-cover flex-shrink-0" />
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80" alt="Imagen 2" class="w-full h-[60vh] object-cover flex-shrink-0" />
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80" alt="Imagen 3" class="w-full h-[60vh] object-cover flex-shrink-0" />
+        </div>
+
+        <!-- Indicadores de imagen -->
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+            <div class="indicator w-2 h-2 rounded-full bg-white shadow-md opacity-100"></div>
+            <div class="indicator w-2 h-2 rounded-full bg-white/50 shadow-md"></div>
+            <div class="indicator w-2 h-2 rounded-full bg-white/50 shadow-md"></div>
+        </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="relative -mt-6 bg-white dark:bg-gray-900 rounded-t-3xl shadow-2xl animate-slide-up">
+        <div class="px-6 pt-6 pb-24">
+            
+            <!-- Precio y ubicación -->
+            <div class="mb-6">
+                <div class="flex items-baseline gap-2 mb-2">
+                    <h1 class="text-gray-900 dark:text-gray-100 text-3xl font-black">$750,000</h1>
+                    <span class="text-gray-500 text-sm">/mes</span>
+                </div>
+                <h2 class="text-gray-800 dark:text-gray-200 text-xl font-bold mb-2">Modern Family House</h2>
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">location_on</span>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">123 Maple Street, San Francisco, CA</p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined text-primary text-2xl mb-1">bed</span>
+                    <span class="text-gray-900 dark:text-gray-100 text-lg font-bold">3</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">Habitaciones</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined text-primary text-2xl mb-1">bathtub</span>
+                    <span class="text-gray-900 dark:text-gray-100 text-lg font-bold">2</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">Baños</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined text-primary text-2xl mb-1">square_foot</span>
+                    <span class="text-gray-900 dark:text-gray-100 text-lg font-bold">2,150</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">pies²</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined text-primary text-2xl mb-1">garage</span>
+                    <span class="text-gray-900 dark:text-gray-100 text-lg font-bold">2</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-xs">Garajes</span>
+                </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-6">
+                <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-3">Descripción</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed" id="description">
+                    Hermosa casa familiar en vecindario tranquilo con excelentes escuelas cercanas. Cuenta con cocina moderna completamente equipada, sala de estar espaciosa con chimenea, y un amplio jardín trasero perfecto para entretenimiento familiar.
+                </p>
+                <button onclick="toggleDescription()" class="text-primary text-sm font-semibold mt-2">Ver más</button>
+            </div>
+
+            <!-- Características -->
+            <div class="mb-6">
+                <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-3">Características</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                        <span class="material-symbols-outlined text-primary">check_circle</span>
+                        <span class="text-gray-700 dark:text-gray-300 text-sm font-medium">Aire acondicionado</span>
+                    </div>
+                    <div class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                        <span class="material-symbols-outlined text-primary">check_circle</span>
+                        <span class="text-gray-700 dark:text-gray-300 text-sm font-medium">Piscina</span>
+                    </div>
+                    <div class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                        <span class="material-symbols-outlined text-primary">check_circle</span>
+                        <span class="text-gray-700 dark:text-gray-300 text-sm font-medium">Jardín</span>
+                    </div>
+                    <div class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                        <span class="material-symbols-outlined text-primary">check_circle</span>
+                        <span class="text-gray-700 dark:text-gray-300 text-sm font-medium">Seguridad 24/7</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agente -->
+            <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-3">Agente</h3>
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white text-xl font-bold shadow-md">
+                        JD
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-gray-900 dark:text-gray-100 text-base font-bold">John Doe</p>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">Agente certificado</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="callAgent()" class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white shadow-md hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-lg">call</span>
+                        </button>
+                        <button onclick="messageAgent()" class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white shadow-md hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-lg">chat</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa -->
+            <div class="mb-6">
+                <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-3">Ubicación</h3>
+                <div class="w-full h-48 bg-gray-200 dark:bg-gray-700 rounded-2xl bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgIlJWnkcau3jxYgP9RMFxxK-c7wS6oM37NNjflev1ifeGYq5HCtw7lH_ed8_uvFERxT0uGzBgzhIQgAXxptwZUjqn2O7SADdIor1WYuyYRJsiHC9nSCuye9cwdZG6zY5Y2ibP6TcdLilt_yfTpwgzvqORwXVAg85qGBPpIoXAGPcO-QifyaUHlUFpOLpAajf9iZU5-jqSq4u3NLEgbwAf3eI-jzVitnSY4k_sDHPzfF6nf6fLRIMxGh-LolhZYEf26PxBa6mQwZJX");'></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bottom Action Bar -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 px-6 py-4 glass border-t border-gray-200/50">
+        <div class="flex items-center gap-3">
+            <button onclick="scheduleTour()" class="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">
+                <span class="material-symbols-outlined">event</span>
+                <span>Agendar visita</span>
+            </button>
+            <button onclick="contactNow()" class="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold shadow-lg hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined">support_agent</span>
+                <span>Contactar</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let isFavorite = false;
+        let currentImageIndex = 0;
+        const images = document.querySelectorAll('#imageGallery img');
+        const indicators = document.querySelectorAll('.indicator');
+        const gallery = document.getElementById('imageGallery');
+
+        // Scroll de galería
+        gallery.addEventListener('scroll', () => {
+            const scrollLeft = gallery.scrollLeft;
+            const imageWidth = images[0].clientWidth;
+            const newIndex = Math.round(scrollLeft / imageWidth);
+            
+            if (newIndex !== currentImageIndex) {
+                currentImageIndex = newIndex;
+                updateIndicators();
+            }
+        });
+
+        function updateIndicators() {
+            indicators.forEach((indicator, index) => {
+                if (index === currentImageIndex) {
+                    indicator.classList.add('opacity-100');
+                    indicator.classList.remove('opacity-50');
+                } else {
+                    indicator.classList.add('opacity-50');
+                    indicator.classList.remove('opacity-100');
+                }
+            });
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function toggleFavorite() {
+            isFavorite = !isFavorite;
+            const icon = document.getElementById('favoriteIcon');
+            
+            if (isFavorite) {
+                icon.textContent = 'favorite';
+                icon.classList.add('text-primary');
+                icon.style.fontVariationSettings = "'FILL' 1";
+                showToast('Agregado a favoritos ❤️');
+            } else {
+                icon.textContent = 'favorite_border';
+                icon.classList.remove('text-primary');
+                icon.style.fontVariationSettings = "'FILL' 0";
+                showToast('Eliminado de favoritos');
+            }
+        }
+
+        function shareProperty() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Modern Family House',
+                    text: 'Mira esta increíble propiedad',
+                    url: window.location.href
+                });
+            } else {
+                showToast('Compartir no disponible');
+            }
+        }
+
+        function toggleDescription() {
+            const desc = document.getElementById('description');
+            desc.classList.toggle('line-clamp-3');
+        }
+
+        function scheduleTour() {
+            showToast('Agendando visita...');
+        }
+
+        function contactNow() {
+            showToast('Conectando con agente...');
+        }
+
+        function callAgent() {
+            window.location.href = 'tel:+1234567890';
+        }
+
+        function messageAgent() {
+            showToast('Abriendo chat...');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const propertyId = urlParams.get('id');
+            console.log('Cargando propiedad:', propertyId);
+        });
+    </script>
+
+</body>
+</html>

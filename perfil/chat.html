@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      name="viewport"
+    />
+    <title>Chat con Agente - Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#EA5B2B",
+              "primary-dark": "#C74A21",
+              "primary-light": "#F15A29",
+              "background-light": "#FFFFFF",
+              "background-dark": "#1D1D1B",
+              "card-light": "#FFFFFF",
+              "card-dark": "#2A2A28",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      * {
+        -webkit-tap-highlight-color: transparent;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        overscroll-behavior: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        user-select: none;
+      }
+
+      .glass {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+      }
+
+      .dark .glass {
+        background: rgba(42, 42, 40, 0.95);
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(234, 91, 43, 0.3);
+        border-radius: 10px;
+      }
+
+      .message-sent {
+        animation: slideInRight 0.3s ease;
+      }
+
+      .message-received {
+        animation: slideInLeft 0.3s ease;
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .typing-indicator span {
+        animation: typing 1.4s infinite;
+      }
+
+      .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes typing {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-10px);
+        }
+      }
+    </style>
+  </head>
+
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <!-- Header -->
+    <header
+      class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50 h-16"
+    >
+      <div class="flex items-center gap-3">
+        <button
+          onclick="goBack()"
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95"
+        >
+          <span
+            class="material-symbols-outlined text-gray-800 dark:text-gray-200"
+            >arrow_back</span
+          >
+        </button>
+
+        <div class="flex items-center gap-3">
+          <div
+            class="h-11 w-11 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-white text-xl"
+              >person</span
+            >
+          </div>
+          <div>
+            <p class="text-gray-900 dark:text-gray-100 text-base font-bold">
+              María González
+            </p>
+            <p
+              class="text-gray-500 dark:text-gray-400 text-xs flex items-center gap-1"
+            >
+              <span class="h-2 w-2 rounded-full bg-green-500"></span>
+              En línea
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          onclick="callAgent()"
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95"
+        >
+          <span
+            class="material-symbols-outlined text-gray-800 dark:text-gray-200"
+            >call</span
+          >
+        </button>
+        <button
+          onclick="toggleMenu()"
+          class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95"
+        >
+          <span
+            class="material-symbols-outlined text-gray-800 dark:text-gray-200"
+            >more_vert</span
+          >
+        </button>
+      </div>
+    </header>
+
+    <!-- Chat Messages -->
+    <div
+      id="chatContainer"
+      class="flex-1 overflow-y-auto custom-scrollbar pt-20 pb-24 px-4 space-y-4"
+    >
+      <!-- Date Divider -->
+      <div class="flex items-center justify-center my-4">
+        <div class="px-4 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800">
+          <p class="text-gray-600 dark:text-gray-400 text-xs font-medium">
+            Hoy
+          </p>
+        </div>
+      </div>
+
+      <!-- Received Message -->
+      <div class="flex items-start gap-2 message-received">
+        <div
+          class="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center flex-shrink-0"
+        >
+          <span class="material-symbols-outlined text-white text-sm"
+            >person</span
+          >
+        </div>
+        <div class="flex flex-col gap-1 max-w-[75%]">
+          <div
+            class="px-4 py-3 rounded-2xl rounded-tl-sm bg-gray-100 dark:bg-gray-800"
+          >
+            <p class="text-gray-900 dark:text-gray-100 text-sm">
+              ¡Hola! Soy María González, tu agente inmobiliaria. ¿En qué puedo
+              ayudarte hoy?
+            </p>
+          </div>
+          <p class="text-gray-500 text-xs px-2">10:30 AM</p>
+        </div>
+      </div>
+
+      <!-- Sent Message -->
+      <div class="flex items-start gap-2 justify-end message-sent">
+        <div class="flex flex-col gap-1 max-w-[75%] items-end">
+          <div
+            class="px-4 py-3 rounded-2xl rounded-tr-sm bg-gradient-to-r from-primary to-primary-dark"
+          >
+            <p class="text-white text-sm">
+              Hola María, estoy interesado en la propiedad en Maple Street
+            </p>
+          </div>
+          <p class="text-gray-500 text-xs px-2">10:32 AM</p>
+        </div>
+      </div>
+
+      <!-- Received Message with Property Card -->
+      <div class="flex items-start gap-2 message-received">
+        <div
+          class="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center flex-shrink-0"
+        >
+          <span class="material-symbols-outlined text-white text-sm"
+            >person</span
+          >
+        </div>
+        <div class="flex flex-col gap-2 max-w-[75%]">
+          <div
+            class="px-4 py-3 rounded-2xl rounded-tl-sm bg-gray-100 dark:bg-gray-800"
+          >
+            <p class="text-gray-900 dark:text-gray-100 text-sm">
+              ¡Excelente elección! Esta propiedad tiene características
+              increíbles.
+            </p>
+          </div>
+
+          <!-- Property Card -->
+          <div
+            class="rounded-xl overflow-hidden bg-white dark:bg-gray-900 shadow-md"
+          >
+            <div
+              class="h-32 bg-cover bg-center"
+              style="
+                background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80');
+              "
+            ></div>
+            <div class="p-3">
+              <p class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+                $750,000
+              </p>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                123 Maple Street
+              </p>
+              <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                <span>🛏️ 3 hab</span>
+                <span>🛁 2 baños</span>
+                <span>📏 2,150 m²</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-gray-500 text-xs px-2">10:33 AM</p>
+        </div>
+      </div>
+
+      <!-- Sent Message -->
+      <div class="flex items-start gap-2 justify-end message-sent">
+        <div class="flex flex-col gap-1 max-w-[75%] items-end">
+          <div
+            class="px-4 py-3 rounded-2xl rounded-tr-sm bg-gradient-to-r from-primary to-primary-dark"
+          >
+            <p class="text-white text-sm">
+              ¿Podría agendar una visita para este fin de semana?
+            </p>
+          </div>
+          <p class="text-gray-500 text-xs px-2">10:35 AM</p>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="typingIndicator" class="flex items-start gap-2 message-received">
+        <div
+          class="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center flex-shrink-0"
+        >
+          <span class="material-symbols-outlined text-white text-sm"
+            >person</span
+          >
+        </div>
+        <div
+          class="px-4 py-3 rounded-2xl rounded-tl-sm bg-gray-100 dark:bg-gray-800"
+        >
+          <div class="typing-indicator flex gap-1">
+            <span class="h-2 w-2 rounded-full bg-gray-400"></span>
+            <span class="h-2 w-2 rounded-full bg-gray-400"></span>
+            <span class="h-2 w-2 rounded-full bg-gray-400"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message Input -->
+    <div
+      class="fixed bottom-0 left-0 right-0 p-4 glass border-t border-gray-200/50 dark:border-gray-700/50 z-50"
+    >
+      <div class="flex items-end gap-2">
+        <button
+          onclick="attachFile()"
+          class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95"
+        >
+          <span
+            class="material-symbols-outlined text-gray-600 dark:text-gray-300"
+            >attach_file</span
+          >
+        </button>
+
+        <div
+          class="flex-1 flex items-center gap-2 px-4 py-2 rounded-2xl bg-gray-100 dark:bg-gray-800 min-h-[44px]"
+        >
+          <input
+            id="messageInput"
+            type="text"
+            placeholder="Escribe un mensaje..."
+            class="flex-1 bg-transparent text-gray-900 dark:text-gray-100 text-sm focus:outline-none border-none p-0"
+            onkeypress="handleKeyPress(event)"
+          />
+          <button
+            onclick="toggleEmoji()"
+            class="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          >
+            <span
+              class="material-symbols-outlined text-gray-600 dark:text-gray-300 text-lg"
+              >mood</span
+            >
+          </button>
+        </div>
+
+        <button
+          onclick="sendMessage()"
+          class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white shadow-lg hover:scale-105 active:scale-95 transition-all"
+        >
+          <span class="material-symbols-outlined">send</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function goBack() {
+        window.history.back();
+      }
+
+      function callAgent() {
+        alert("Llamando a María González...");
+      }
+
+      function toggleMenu() {
+        alert("Menú de opciones");
+      }
+
+      function attachFile() {
+        alert("Adjuntar archivo");
+      }
+
+      function toggleEmoji() {
+        alert("Selector de emojis");
+      }
+
+      function sendMessage() {
+        const input = document.getElementById("messageInput");
+        const message = input.value.trim();
+
+        if (message) {
+          const chatContainer = document.getElementById("chatContainer");
+          const now = new Date();
+          const time = now.toLocaleTimeString("es-ES", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          const messageHTML = `
+                    <div class="flex items-start gap-2 justify-end message-sent">
+                        <div class="flex flex-col gap-1 max-w-[75%] items-end">
+                            <div class="px-4 py-3 rounded-2xl rounded-tr-sm bg-gradient-to-r from-primary to-primary-dark">
+                                <p class="text-white text-sm">${message}</p>
+                            </div>
+                            <p class="text-gray-500 text-xs px-2">${time}</p>
+                        </div>
+                    </div>
+                `;
+
+          // Remove typing indicator temporarily
+          const typingIndicator = document.getElementById("typingIndicator");
+          typingIndicator.style.display = "none";
+
+          chatContainer.insertAdjacentHTML("beforeend", messageHTML);
+          input.value = "";
+
+          // Scroll to bottom
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+
+          // Show typing indicator after 1 second
+          setTimeout(() => {
+            typingIndicator.style.display = "flex";
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+          }, 1000);
+        }
+      }
+
+      function handleKeyPress(event) {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      }
+
+      // Auto scroll to bottom on load
+      document.addEventListener("DOMContentLoaded", () => {
+        const chatContainer = document.getElementById("chatContainer");
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      });
+    </script>
+  </body>
+</html>

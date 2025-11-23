@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>MEA - Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29",
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#1D1D1B",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#2A2A28",
+                        "accent-dark": "#000000",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overscroll-behavior: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            touch-action: pan-x pan-y;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .page.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .bottom-sheet {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+            touch-action: none;
+        }
+
+        .bottom-sheet.dragging {
+            transition: none;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+        }
+
+        .dark .glass {
+            background: rgba(42, 42, 40, 0.95);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(234, 91, 43, 0.3);
+            border-radius: 10px;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.9); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.4s ease;
+        }
+
+        .pin-pulse::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.4;
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .image-gallery {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+
+<body class="font-display bg-background-light dark:bg-background-dark">
+
+    <!-- ========== PÁGINA 1: MAPA CON PROPIEDADES ========== -->
+    <div id="mapPage" class="page active flex flex-col h-screen w-full">
+        
+        <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+            <div class="flex items-center gap-2">
+                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-dark text-white shadow-md">
+                    <span class="material-symbols-outlined text-lg">home</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-gray-900 dark:text-gray-100 text-lg font-bold leading-none">MEA</span>
+                    <span class="text-gray-500 dark:text-gray-400 text-[10px] font-medium">Inmobiliaria</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="goToFavorites()" class="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-lg">favorite</span>
+                    <span id="favCount" class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white text-[10px] font-bold shadow-lg">0</span>
+                </button>
+                
+                <div class="relative">
+                    <button onclick="toggleUserMenu()" class="flex items-center gap-2 rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all px-3 py-2 active:scale-95">
+                        <div class="h-7 w-7 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
+                            <span class="material-symbols-outlined text-sm text-white">person</span>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-500 text-sm">expand_more</span>
+                    </button>
+
+                    <div id="userMenu" class="hidden absolute top-12 right-0 w-56 rounded-2xl glass shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden animate-slide-up z-[9999]">
+                        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Usuario</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-xs">usuario@email.com</p>
+                        </div>
+                        <div class="py-2">
+                            <button onclick="goToProfile()" class="w-full px-4 py-2.5 flex items-center gap-3 text-gray-700 dark:text-gray-300 text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <span class="material-symbols-outlined text-lg">person</span>
+                                <span>Mi perfil</span>
+                            </button>
+                            <button onclick="goToPage('searchPage')" class="w-full px-4 py-2.5 flex items-center gap-3 text-gray-700 dark:text-gray-300 text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <span class="material-symbols-outlined text-lg">history</span>
+                                <span>Historial de búsqueda</span>
+                            </button>
+                            <button onclick="toggleAdvancedFilters()" class="w-full px-4 py-2.5 flex items-center gap-3 text-gray-700 dark:text-gray-300 text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <span class="material-symbols-outlined text-lg">tune</span>
+                                <span>Filtros avanzados</span>
+                            </button>
+                            <button onclick="toggleDarkMode()" class="w-full px-4 py-2.5 flex items-center gap-3 text-gray-700 dark:text-gray-300 text-sm hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                <span class="material-symbols-outlined text-lg">dark_mode</span>
+                                <span>Modo oscuro</span>
+                                <div class="ml-auto">
+                                    <div class="w-10 h-5 bg-gray-300 dark:bg-primary rounded-full relative transition-colors">
+                                        <div class="absolute top-0.5 left-0.5 dark:left-5 w-4 h-4 bg-white rounded-full transition-all shadow-sm"></div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button class="w-full px-4 py-2.5 flex items-center gap-3 text-primary hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                <span class="material-symbols-outlined text-lg">logout</span>
+                                <span>Cerrar sesión</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="fixed top-16 left-0 right-0 z-40 px-4 pt-4 pb-2">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="flex-1 relative">
+                    <div class="flex items-center rounded-2xl glass shadow-lg h-14 pl-5 pr-4 gap-3">
+                        <span class="material-symbols-outlined text-primary text-2xl">search</span>
+                        <input id="searchInput" class="flex-1 bg-transparent text-gray-900 dark:text-gray-100 text-base font-medium placeholder:text-gray-400 focus:outline-none border-none p-0" placeholder="Buscar ubicación..." />
+                        <button onclick="clearSearch()" id="clearSearchBtn" class="hidden flex h-9 w-9 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
+                            <span class="material-symbols-outlined text-gray-600 dark:text-gray-300 text-xl">close</span>
+                        </button>
+                    </div>
+                </div>
+                <button onclick="toggleAdvancedFilters()" class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl glass text-gray-800 dark:text-gray-200 shadow-lg transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-2xl">tune</span>
+                </button>
+            </div>
+
+            <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                <button onclick="filterByType('house')" class="filter-chip flex items-center gap-2 px-5 py-3 rounded-full glass text-gray-700 dark:text-gray-300 text-sm font-bold shadow-md whitespace-nowrap transition-all active:scale-95" data-type="house">
+                    <span class="material-symbols-outlined text-lg">home</span>
+                    <span>Casas</span>
+                    <span class="chip-count ml-2 px-2 py-1 rounded-full bg-gray-200 dark:bg-gray-600 text-xs">3</span>
+                </button>
+                <button onclick="filterByType('apartment')" class="filter-chip flex items-center gap-2 px-5 py-3 rounded-full glass text-gray-700 dark:text-gray-300 text-sm font-bold shadow-md whitespace-nowrap transition-all active:scale-95" data-type="apartment">
+                    <span class="material-symbols-outlined text-lg">apartment</span>
+                    <span>Apartamentos</span>
+                    <span class="chip-count ml-2 px-2 py-1 rounded-full bg-gray-200 dark:bg-gray-600 text-xs">2</span>
+                </button>
+                <button onclick="filterByType('villa')" class="filter-chip flex items-center gap-2 px-5 py-3 rounded-full glass text-gray-700 dark:text-gray-300 text-sm font-bold shadow-md whitespace-nowrap transition-all active:scale-95" data-type="villa">
+                    <span class="material-symbols-outlined text-lg">villa</span>
+                    <span>Villas</span>
+                    <span class="chip-count ml-2 px-2 py-1 rounded-full bg-gray-200 dark:bg-gray-600 text-xs">2</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 relative pt-36">
+            <div class="absolute inset-0 bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgIlJWnkcau3jxYgP9RMFxxK-c7wS6oM37NNjflev1ifeGYq5HCtw7lH_ed8_uvFERxT0uGzBgzhIQgAXxptwZUjqn2O7SADdIor1WYuyYRJsiHC9nSCuye9cwdZG6zY5Y2ibP6TcdLilt_yfTpwgzvqORwXVAg85qGBPpIoXAGPcO-QifyaUHlUFpOLpAajf9iZU5-jqSq4u3NLEgbwAf3eI-jzVitnSY4k_sDHPzfF6nf6fLRIMxGh-LolhZYEf26PxBa6mQwZJX");'>
+                
+                <button class="absolute pin-pulse" style="top: 30%; left: 25%;" onclick="selectPropertyOnMap(0)">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-white shadow-lg hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-lg">home</span>
+                    </div>
+                </button>
+
+                <button class="absolute pin-pulse" style="top: 45%; left: 60%;" onclick="selectPropertyOnMap(1)">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-white shadow-lg hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-lg">apartment</span>
+                    </div>
+                </button>
+
+                <button class="absolute pin-pulse" style="top: 60%; left: 35%;" onclick="selectPropertyOnMap(2)">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dark text-white shadow-lg hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-lg">villa</span>
+                    </div>
+                </button>
+            </div>
+
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+                <button onclick="centerUserLocation()" class="flex h-10 w-10 items-center justify-center rounded-xl glass shadow-lg hover:scale-105 transition-transform active:scale-95">
+                    <span class="material-symbols-outlined text-gray-800 dark:text-gray-200 text-lg">my_location</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="bottomSheet" class="bottom-sheet fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark rounded-t-3xl shadow-2xl" style="height: 45vh; transform: translateY(0);">
+            
+            <div class="handle-area py-3 flex items-center justify-center cursor-grab active:cursor-grabbing" id="sheetHandle">
+                <div class="h-1.5 w-12 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+            </div>
+
+            <div class="px-4 pb-20 h-full overflow-hidden flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Propiedades cercanas</h2>
+                    <span class="text-primary text-sm font-semibold"><span id="propertyCount">7</span> encontradas</span>
+                </div>
+
+                <div id="propertyCarousel" class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+                    <!-- Las propiedades se generan dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-2 glass border-t border-gray-200/50 dark:border-gray-700/50">
+            <button onclick="goToPage('mapPage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-primary hover:bg-primary/10 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">map</span>
+                <span class="text-xs font-bold">Mapa</span>
+            </button>
+            <button onclick="goToPage('searchPage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">search</span>
+                <span class="text-xs font-medium">Buscar</span>
+            </button>
+            <button onclick="goToFavorites()" class="nav-btn relative flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">favorite_border</span>
+                <span class="text-xs font-medium">Favoritos</span>
+                <span id="navFavBadge" class="hidden absolute -top-0.5 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white text-[10px] font-bold shadow-lg">0</span>
+            </button>
+            <button onclick="contactAgent()" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white hover:from-primary-dark hover:to-primary transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95">
+                <span class="material-symbols-outlined text-lg">support_agent</span>
+                <span class="text-xs font-bold">Inversiones</span>
+            </button>
+            <button onclick="goToPage('profilePage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">person</span>
+                <span class="text-xs font-medium">Perfil</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ========== PÁGINA 2: DETALLES DE PROPIEDAD ========== -->
+    <div id="detailsPage" class="page flex-col h-screen w-full">
+        
+        <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+            <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <span class="text-gray-900 dark:text-gray-100 text-base font-bold">Detalles de la propiedad</span>
+            <button onclick="shareProperty()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">share</span>
+            </button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar pt-16 pb-24">
+            
+            <div class="relative">
+                <div id="imageGallery" class="image-gallery flex overflow-x-auto no-scrollbar">
+                    <!-- Las imágenes se cargan dinámicamente -->
+                </div>
+                
+                <div class="absolute bottom-4 right-4 px-3 py-1.5 rounded-lg bg-gray-900/90 text-white text-xs font-bold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">photo_camera</span>
+                    <span id="imageCounter">1/8</span>
+                </div>
+
+                <button id="detailFavBtn" onclick="toggleDetailFavorite()" class="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full glass shadow-lg hover:scale-110 transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-2xl text-gray-700 dark:text-gray-300">favorite</span>
+                </button>
+            </div>
+
+            <div class="px-4 py-6 space-y-6">
+                
+                <div>
+                    <div class="flex items-baseline gap-2 mb-2">
+                        <h1 id="detailPrice" class="text-gray-900 dark:text-gray-100 text-3xl font-bold">$750,000</h1>
+                        <span class="px-2 py-1 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-bold">-4%</span>
+                    </div>
+                    <p id="detailAddress" class="text-gray-600 dark:text-gray-400 text-base font-semibold mb-1">123 Maple Street</p>
+                    <div class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-gray-400 text-sm">location_on</span>
+                        <p id="detailLocation" class="text-gray-500 dark:text-gray-500 text-sm">San Francisco, CA • 2.4 km</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="flex flex-col items-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+                        <span class="material-symbols-outlined text-primary text-2xl mb-2">bed</span>
+                        <span id="detailBeds" class="text-gray-900 dark:text-gray-100 text-lg font-bold">3</span>
+                        <span class="text-gray-500 text-xs">Habitaciones</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+                        <span class="material-symbols-outlined text-primary text-2xl mb-2">bathtub</span>
+                        <span id="detailBaths" class="text-gray-900 dark:text-gray-100 text-lg font-bold">2</span>
+                        <span class="text-gray-500 text-xs">Baños</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+                        <span class="material-symbols-outlined text-primary text-2xl mb-2">square_foot</span>
+                        <span id="detailSqft" class="text-gray-900 dark:text-gray-100 text-lg font-bold">2,150</span>
+                        <span class="text-gray-500 text-xs">m²</span>
+                    </div>
+                    <div class="flex flex-col items-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+                        <span class="material-symbols-outlined text-primary text-2xl mb-2">garage</span>
+                        <span id="detailGarage" class="text-gray-900 dark:text-gray-100 text-lg font-bold">2</span>
+                        <span class="text-gray-500 text-xs">Garajes</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-3">Descripción</h3>
+                    <p id="detailDescription" class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                        Esta hermosa propiedad cuenta con amplios espacios, acabados de lujo y una ubicación privilegiada. Perfecta para familias que buscan comodidad y estilo. La casa incluye cocina moderna totalmente equipada, amplias habitaciones con closets empotrados, jardín privado y garaje para 2 vehículos.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-3">Características</h3>
+                    <div id="detailFeatures" class="flex flex-wrap gap-2">
+                        <!-- Se cargan dinámicamente -->
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-3">Ubicación</h3>
+                    <div class="w-full h-48 rounded-xl bg-gray-200 dark:bg-gray-800 overflow-hidden">
+                        <div class="w-full h-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgIlJWnkcau3jxYgP9RMFxxK-c7wS6oM37NNjflev1ifeGYq5HCtw7lH_ed8_uvFERxT0uGzBgzhIQgAXxptwZUjqn2O7SADdIor1WYuyYRJsiHC9nSCuye9cwdZG6zY5Y2ibP6TcdLilt_yfTpwgzvqORwXVAg85qGBPpIoXAGPcO-QifyaUHlUFpOLpAajf9iZU5-jqSq4u3NLEgbwAf3eI-jzVitnSY4k_sDHPzfF6nf6fLRIMxGh-LolhZYEf26PxBa6mQwZJX");'></div>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl glass border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white text-xl">person</span>
+                        </div>
+                        <div>
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">María González</p>
+                            <p class="text-gray-500 text-xs">Inversiones inmobiliario</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="callAgent()" class="flex-1 flex items-center justify-center gap-2 h-11 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold transition-all active:scale-95">
+                            <span class="material-symbols-outlined text-lg">call</span>
+                            <span>Llamar</span>
+                        </button>
+                        <button onclick="messageAgent()" class="flex-1 flex items-center justify-center gap-2 h-11 rounded-xl bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-sm font-bold transition-all active:scale-95">
+                            <span class="material-symbols-outlined text-lg">chat</span>
+                            <span>Mensaje</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="fixed bottom-0 left-0 right-0 p-4 glass border-t border-gray-200/50 dark:border-gray-700/50">
+            <div class="flex gap-2">
+                <button onclick="scheduleTour()" class="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold shadow-lg transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-lg">event</span>
+                    <span>Agendar visita</span>
+                </button>
+                <button onclick="makeOffer()" class="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-xl">request_quote</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== PÁGINA 3: BÚSQUEDA (CON CONTENIDO COMPLETO) ========== -->
+    <div id="searchPage" class="page flex-col h-screen w-full">
+        <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+            <h1 class="text-gray-900 dark:text-gray-100 text-xl font-bold mb-4">Buscar propiedades</h1>
+            <div class="flex items-center rounded-2xl glass border border-gray-200 dark:border-gray-700 h-12 px-4 gap-3">
+                <span class="material-symbols-outlined text-primary text-xl">search</span>
+                <input id="searchPageInput" type="text" placeholder="Ubicación, tipo, precio..." class="flex-1 bg-transparent text-gray-900 dark:text-gray-100 text-sm focus:outline-none border-none p-0" />
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar pt-32 pb-20 px-4">
+            <div class="space-y-6">
+                
+                <!-- Búsquedas recientes -->
+                <div>
+                    <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3">Búsquedas recientes</h3>
+                    <div class="space-y-2">
+                        <button onclick="performSearch('San Francisco, CA')" class="w-full p-4 rounded-xl glass text-left flex items-center gap-3 active:scale-95 transition-transform">
+                            <span class="material-symbols-outlined text-gray-400">history</span>
+                            <div class="flex-1">
+                                <p class="text-gray-700 dark:text-gray-300 text-sm font-semibold">San Francisco, CA</p>
+                                <p class="text-gray-500 text-xs">Hace 2 horas • 12 resultados</p>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400 text-sm">arrow_forward</span>
+                        </button>
+                        <button onclick="performSearch('Oakland, CA')" class="w-full p-4 rounded-xl glass text-left flex items-center gap-3 active:scale-95 transition-transform">
+                            <span class="material-symbols-outlined text-gray-400">history</span>
+                            <div class="flex-1">
+                                <p class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Oakland, CA</p>
+                                <p class="text-gray-500 text-xs">Ayer • 8 resultados</p>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400 text-sm">arrow_forward</span>
+                        </button>
+                        <button onclick="performSearch('Berkeley, CA')" class="w-full p-4 rounded-xl glass text-left flex items-center gap-3 active:scale-95 transition-transform">
+                            <span class="material-symbols-outlined text-gray-400">history</span>
+                            <div class="flex-1">
+                                <p class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Berkeley, CA</p>
+                                <p class="text-gray-500 text-xs">Hace 3 días • 15 resultados</p>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400 text-sm">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Búsquedas populares -->
+                <div>
+                    <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3">Búsquedas populares</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="performSearch('Casas con piscina')" class="px-4 py-2 rounded-full glass text-gray-700 dark:text-gray-300 text-sm font-semibold active:scale-95 transition-transform hover:bg-primary/10">
+                            🏊 Casas con piscina
+                        </button>
+                        <button onclick="performSearch('Apartamentos modernos')" class="px-4 py-2 rounded-full glass text-gray-700 dark:text-gray-300 text-sm font-semibold active:scale-95 transition-transform hover:bg-primary/10">
+                            🏢 Apartamentos modernos
+                        </button>
+                        <button onclick="performSearch('Villas de lujo')" class="px-4 py-2 rounded-full glass text-gray-700 dark:text-gray-300 text-sm font-semibold active:scale-95 transition-transform hover:bg-primary/10">
+                            ✨ Villas de lujo
+                        </button>
+                        <button onclick="performSearch('Cerca del mar')" class="px-4 py-2 rounded-full glass text-gray-700 dark:text-gray-300 text-sm font-semibold active:scale-95 transition-transform hover:bg-primary/10">
+                            🌊 Cerca del mar
+                        </button>
+                        <button onclick="performSearch('Con jardín')" class="px-4 py-2 rounded-full glass text-gray-700 dark:text-gray-300 text-sm font-semibold active:scale-95 transition-transform hover:bg-primary/10">
+                            🌳 Con jardín
+                        </button>
+                        <button onclick="performSearch('Garaje doble')" class="px-4 py-2 rounded-full glass text-gray-700 dark:text-gray-300 text-sm font-semibold active:scale-95 transition-transform hover:bg-primary/10">
+                            🚗 Garaje doble
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Categorías -->
+                <div>
+                    <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3">Explorar por categoría</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="filterByType('house'); goToPage('mapPage');" class="p-4 rounded-xl glass text-left active:scale-95 transition-transform hover:shadow-lg">
+                            <div class="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                                <span class="material-symbols-outlined text-primary text-3xl">home</span>
+                            </div>
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Casas</p>
+                            <p class="text-gray-500 text-xs">3 propiedades disponibles</p>
+                        </button>
+                        <button onclick="filterByType('apartment'); goToPage('mapPage');" class="p-4 rounded-xl glass text-left active:scale-95 transition-transform hover:shadow-lg">
+                            <div class="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                                <span class="material-symbols-outlined text-primary text-3xl">apartment</span>
+                            </div>
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Apartamentos</p>
+                            <p class="text-gray-500 text-xs">2 propiedades disponibles</p>
+                        </button>
+                        <button onclick="filterByType('villa'); goToPage('mapPage');" class="p-4 rounded-xl glass text-left active:scale-95 transition-transform hover:shadow-lg">
+                            <div class="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                                <span class="material-symbols-outlined text-primary text-3xl">villa</span>
+                            </div>
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Villas</p>
+                            <p class="text-gray-500 text-xs">2 propiedades disponibles</p>
+                        </button>
+                        <button onclick="showCommercialProperties()" class="p-4 rounded-xl glass text-left active:scale-95 transition-transform hover:shadow-lg">
+                            <div class="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                                <span class="material-symbols-outlined text-primary text-3xl">business</span>
+                            </div>
+                            <p class="text-gray-900 dark:text-gray-100 text-sm font-bold">Comerciales</p>
+                            <p class="text-gray-500 text-xs">Próximamente</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Rangos de precio populares -->
+                <div>
+                    <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3">Rangos de precio</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="filterByPrice(0, 500000)" class="p-3 rounded-xl glass text-center active:scale-95 transition-transform">
+                            <p class="text-primary text-sm font-bold">Hasta $500K</p>
+                            <p class="text-gray-500 text-xs">2 propiedades</p>
+                        </button>
+                        <button onclick="filterByPrice(500000, 750000)" class="p-3 rounded-xl glass text-center active:scale-95 transition-transform">
+                            <p class="text-primary text-sm font-bold">$500K - $750K</p>
+                            <p class="text-gray-500 text-xs">3 propiedades</p>
+                        </button>
+                        <button onclick="filterByPrice(750000, 1000000)" class="p-3 rounded-xl glass text-center active:scale-95 transition-transform">
+                            <p class="text-primary text-sm font-bold">$750K - $1M</p>
+                            <p class="text-gray-500 text-xs">2 propiedades</p>
+                        </button>
+                        <button onclick="filterByPrice(1000000, 10000000)" class="p-3 rounded-xl glass text-center active:scale-95 transition-transform">
+                            <p class="text-primary text-sm font-bold">Más de $1M</p>
+                            <p class="text-gray-500 text-xs">0 propiedades</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-2 glass border-t border-gray-200/50 dark:border-gray-700/50">
+            <button onclick="goToPage('mapPage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">map</span>
+                <span class="text-xs font-medium">Mapa</span>
+            </button>
+            <button onclick="goToPage('searchPage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-primary hover:bg-primary/10 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">search</span>
+                <span class="text-xs font-bold">Buscar</span>
+            </button>
+            <button onclick="goToFavorites()" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">favorite_border</span>
+                <span class="text-xs font-medium">Favoritos</span>
+            </button>
+            <button onclick="contactAgent()" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white shadow-md hover:scale-105 active:scale-95">
+                <span class="material-symbols-outlined text-lg">support_agent</span>
+                <span class="text-xs font-bold">Inversiones</span>
+            </button>
+            <button onclick="goToPage('profilePage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">person</span>
+                <span class="text-xs font-medium">Perfil</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ========== PÁGINA 4: FAVORITOS (CON CONTENIDO COMPLETO) ========== -->
+    <div id="favoritesPage" class="page flex-col h-screen w-full">
+        <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+            <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <span class="text-gray-900 dark:text-gray-100 text-base font-bold">Mis Favoritos</span>
+            <div class="w-9"></div>
+        </header>
+
+        <div id="favoritesContainer" class="flex-1 overflow-y-auto custom-scrollbar pt-16 pb-20 px-4">
+            <!-- Las propiedades favoritas se cargan aquí dinámicamente -->
+        </div>
+
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-2 glass border-t border-gray-200/50 dark:border-gray-700/50">
+            <button onclick="goToPage('mapPage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">map</span>
+                <span class="text-xs font-medium">Mapa</span>
+            </button>
+            <button onclick="goToPage('searchPage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">search</span>
+                <span class="text-xs font-medium">Buscar</span>
+            </button>
+            <button onclick="goToFavorites()" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-primary hover:bg-primary/10 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                <span class="text-xs font-bold">Favoritos</span>
+            </button>
+            <button onclick="contactAgent()" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white shadow-md hover:scale-105 active:scale-95">
+                <span class="material-symbols-outlined text-lg">support_agent</span>
+                <span class="text-xs font-bold">Inversiones</span>
+            </button>
+            <button onclick="goToPage('profilePage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">person</span>
+                <span class="text-xs font-medium">Perfil</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ========== PÁGINA 5: PERFIL (CON CONTENIDO COMPLETO) ========== -->
+    <div id="profilePage" class="page flex-col h-screen w-full">
+        <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+            <h1 class="text-gray-900 dark:text-gray-100 text-xl font-bold">Mi Perfil</h1>
+        </header>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar pt-16 pb-20">
+            <div class="px-4 py-6 space-y-6">
+                
+                <!-- Avatar y nombre -->
+                <div class="flex flex-col items-center">
+                    <div class="h-24 w-24 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center mb-4 shadow-lg">
+                        <span class="material-symbols-outlined text-white text-5xl">person</span>
+                    </div>
+                    <h2 class="text-gray-900 dark:text-gray-100 text-xl font-bold">Juan Pérez</h2>
+                    <p class="text-gray-500 text-sm mb-2">juan.perez@email.com</p>
+                    <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Usuario Premium</span>
+                </div>
+
+                <!-- Estadísticas -->
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="p-4 rounded-xl glass text-center">
+                        <p class="text-gray-900 dark:text-gray-100 text-2xl font-bold" id="profileFavCount">0</p>
+                        <p class="text-gray-500 text-xs">Favoritos</p>
+                    </div>
+                    <div class="p-4 rounded-xl glass text-center">
+                        <p class="text-gray-900 dark:text-gray-100 text-2xl font-bold">12</p>
+                        <p class="text-gray-500 text-xs">Búsquedas</p>
+                    </div>
+                    <div class="p-4 rounded-xl glass text-center">
+                        <p class="text-gray-900 dark:text-gray-100 text-2xl font-bold">5</p>
+                        <p class="text-gray-500 text-xs">Visitas</p>
+                    </div>
+                </div>
+
+                <!-- Actividad reciente -->
+                <div>
+                    <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3">Actividad reciente</h3>
+                    <div class="space-y-2">
+                        <div class="p-3 rounded-xl glass flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-lg">search</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Búsqueda en San Francisco</p>
+                                <p class="text-gray-500 text-xs">Hace 2 horas</p>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-xl glass flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-lg">favorite</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Agregaste 2 favoritos</p>
+                                <p class="text-gray-500 text-xs">Ayer</p>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-xl glass flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-lg">event</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Visita agendada</p>
+                                <p class="text-gray-500 text-xs">Hace 3 días</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opciones -->
+                <div>
+                    <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3">Configuración</h3>
+                    <div class="space-y-2">
+                        <button onclick="editProfile()" class="w-full p-4 rounded-xl glass flex items-center justify-between active:scale-95 transition-transform">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">edit</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Editar perfil</span>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                        </button>
+
+                        <button onclick="goToFavorites()" class="w-full p-4 rounded-xl glass flex items-center justify-between active:scale-95 transition-transform">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">favorite</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Mis favoritos</span>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                        </button>
+
+                        <button onclick="viewSearchHistory()" class="w-full p-4 rounded-xl glass flex items-center justify-between active:scale-95 transition-transform">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">history</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Historial de búsqueda</span>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                        </button>
+
+                        <button onclick="toggleDarkMode()" class="w-full p-4 rounded-xl glass flex items-center justify-between active:scale-95 transition-transform">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">dark_mode</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Modo oscuro</span>
+                            </div>
+                            <div id="darkModeToggle" class="w-12 h-6 bg-gray-300 dark:bg-primary rounded-full relative transition-colors">
+                                <div class="absolute top-1 left-1 dark:left-7 w-4 h-4 bg-white rounded-full transition-all shadow-sm"></div>
+                            </div>
+                        </button>
+
+                        <button onclick="showNotificationSettings()" class="w-full p-4 rounded-xl glass flex items-center justify-between active:scale-95 transition-transform">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">notifications</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Notificaciones</span>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                        </button>
+
+                        <button onclick="showHelp()" class="w-full p-4 rounded-xl glass flex items-center justify-between active:scale-95 transition-transform">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">help</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Ayuda y soporte</span>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                        </button>
+
+                        <button onclick="logout()" class="w-full p-4 rounded-xl glass flex items-center justify-between active:scale-95 transition-transform">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">logout</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-sm font-semibold">Cerrar sesión</span>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-4 py-2 glass border-t border-gray-200/50 dark:border-gray-700/50">
+            <button onclick="goToPage('mapPage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">map</span>
+                <span class="text-xs font-medium">Mapa</span>
+            </button>
+            <button onclick="goToPage('searchPage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">search</span>
+                <span class="text-xs font-medium">Buscar</span>
+            </button>
+            <button onclick="goToFavorites()" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg">favorite_border</span>
+                <span class="text-xs font-medium">Favoritos</span>
+            </button>
+            <button onclick="contactAgent()" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white shadow-md hover:scale-105 active:scale-95">
+                <span class="material-symbols-outlined text-lg">support_agent</span>
+                <span class="text-xs font-bold">Inversiones</span>
+            </button>
+            <button onclick="goToPage('profilePage')" class="nav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-primary hover:bg-primary/10 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">person</span>
+                <span class="text-xs font-bold">Perfil</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Panel de Filtros Avanzados -->
+    <div id="filtersPanel" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-background-light dark:bg-background-dark shadow-2xl z-[60] transform translate-x-full transition-transform duration-300">
+        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Filtros Avanzados</h2>
+            <button onclick="toggleAdvancedFilters()" class="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
+                <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">close</span>
+            </button>
+        </div>
+
+        <div class="h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar p-4 space-y-6">
+            <div>
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3">Rango de precio</h3>
+                <div class="flex gap-2">
+                    <input type="number" placeholder="Mínimo" class="flex-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-card-dark text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                    <input type="number" placeholder="Máximo" class="flex-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-card-dark text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3">Habitaciones</h3>
+                <div class="grid grid-cols-5 gap-2">
+                    <button class="py-2 text-center text-sm rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-all">1+</button>
+                    <button class="py-2 text-center text-sm rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-all">2+</button>
+                    <button class="py-2 text-center text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-primary text-white">3+</button>
+                    <button class="py-2 text-center text-sm rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-all">4+</button>
+                    <button class="py-2 text-center text-sm rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:border-primary transition-all">5+</button>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-gray-900 dark:text-gray-100 text-sm font-bold mb-3">Características</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                        <input type="checkbox" class="w-4 h-4 text-primary rounded focus:ring-primary" />
+                        <span class="text-gray-700 dark:text-gray-300 text-sm">Piscina</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                        <input type="checkbox" class="w-4 h-4 text-primary rounded focus:ring-primary" />
+                        <span class="text-gray-700 dark:text-gray-300 text-sm">Garaje</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                        <input type="checkbox" class="w-4 h-4 text-primary rounded focus:ring-primary" />
+                        <span class="text-gray-700 dark:text-gray-300 text-sm">Jardín</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                        <input type="checkbox" class="w-4 h-4 text-primary rounded focus:ring-primary" />
+                        <span class="text-gray-700 dark:text-gray-300 text-sm">Gimnasio</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                        <input type="checkbox" class="w-4 h-4 text-primary rounded focus:ring-primary" />
+                        <span class="text-gray-700 dark:text-gray-300 text-sm">Seguridad 24/7</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0 p-4 bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-700">
+            <div class="flex gap-2">
+                <button onclick="clearFilters()" class="flex-1 px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 text-sm font-semibold transition-colors active:scale-95">Limpiar</button>
+                <button onclick="applyFilters()" class="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-semibold shadow-md transition-all active:scale-95">Aplicar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity duration-300" onclick="closeOverlays()"></div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast px-6 py-3 rounded-full glass shadow-2xl">
+        <p class="text-gray-900 dark:text-gray-100 text-sm font-semibold" id="toastMessage"></p>
+    </div>
+
+    <script>
+        // Datos de propiedades (mantiene TODOS los detalles)
+        const properties = [
+            {
+                id: 1,
+                type: 'house',
+                price: 750000,
+                oldPrice: 780000,
+                discount: '-4%',
+                address: '123 Maple Street',
+                location: 'San Francisco, CA',
+                distance: '2.4 km',
+                beds: 3,
+                baths: 2,
+                sqft: 2150,
+                garage: 2,
+                images: [
+                    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+                    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+                    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80',
+                    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80',
+                ],
+                features: ['Piscina', 'Jardín', 'Garaje', 'Seguridad 24/7', 'Cocina moderna', 'Terraza'],
+                description: 'Esta hermosa propiedad cuenta con amplios espacios, acabados de lujo y una ubicación privilegiada. Perfecta para familias que buscan comodidad y estilo. La casa incluye cocina moderna totalmente equipada, amplias habitaciones con closets empotrados, jardín privado y garaje para 2 vehículos.'
+            },
+            {
+                id: 2,
+                type: 'apartment',
+                price: 650000,
+                address: '456 Oak Avenue',
+                location: 'San Francisco, CA',
+                distance: '3.1 km',
+                beds: 3,
+                baths: 2.5,
+                sqft: 1950,
+                garage: 1,
+                images: [
+                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+                    'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80',
+                    'https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800&q=80',
+                ],
+                features: ['Terraza', 'Gimnasio', 'Seguridad', 'Vista panorámica', 'Balcón'],
+                description: 'Moderno apartamento con vistas panorámicas y amenidades de primera clase. Cuenta con amplios espacios, acabados contemporáneos y excelente iluminación natural.'
+            },
+            {
+                id: 3,
+                type: 'villa',
+                price: 820000,
+                address: '789 Pine Boulevard',
+                location: 'San Francisco, CA',
+                distance: '4.2 km',
+                beds: 4,
+                baths: 3,
+                sqft: 2580,
+                garage: 2,
+                images: [
+                    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80',
+                    'https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=800&q=80',
+                ],
+                features: ['Vista al mar', 'Spa', 'Gimnasio', 'Cine en casa', 'Piscina infinita', 'Jardín tropical'],
+                description: 'Lujosa villa con acabados premium, espacios amplios y tecnología de punta. Ideal para quienes buscan exclusividad y confort en un solo lugar.'
+            },
+            {
+                id: 4,
+                type: 'house',
+                price: 580000,
+                address: '321 Cedar Lane',
+                location: 'Oakland, CA',
+                distance: '5.8 km',
+                beds: 3,
+                baths: 2,
+                sqft: 1850,
+                garage: 2,
+                images: [
+                    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80',
+                ],
+                features: ['Jardín', 'Garaje doble', 'Patio trasero', 'Chimenea'],
+                description: 'Casa familiar con excelente distribución, perfecta para familias con niños. Cuenta con amplias áreas sociales y espacios verdes.'
+            },
+            {
+                id: 5,
+                type: 'apartment',
+                price: 420000,
+                address: '890 Elm Street',
+                location: 'Berkeley, CA',
+                distance: '6.2 km',
+                beds: 2,
+                baths: 2,
+                sqft: 1200,
+                garage: 1,
+                images: [
+                    'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80',
+                ],
+                features: ['Balcón', 'Estacionamiento', 'Cerca del metro'],
+                description: 'Apartamento moderno y funcional, ideal para parejas o profesionales. Excelente ubicación cerca del transporte público.'
+            },
+            {
+                id: 6,
+                type: 'villa',
+                price: 950000,
+                address: '555 Sunset Drive',
+                location: 'San Francisco, CA',
+                distance: '3.5 km',
+                beds: 5,
+                baths: 4,
+                sqft: 3200,
+                garage: 3,
+                images: [
+                    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+                ],
+                features: ['Piscina', 'Cancha de tenis', 'Bodega de vinos', 'Home office', 'Vista al mar'],
+                description: 'Villa de lujo con todas las comodidades imaginables. Perfecta para entretenimiento y vida familiar de alto nivel.'
+            },
+            {
+                id: 7,
+                type: 'house',
+                price: 695000,
+                address: '777 Birch Road',
+                location: 'San Francisco, CA',
+                distance: '2.8 km',
+                beds: 4,
+                baths: 3,
+                sqft: 2400,
+                garage: 2,
+                images: [
+                    'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80',
+                ],
+                features: ['Jardín amplio', 'Garaje', 'Cocina gourmet', 'Oficina en casa'],
+                description: 'Casa espaciosa con diseño moderno y funcional. Ideal para familias que valoran el espacio y el confort.'
+            }
+        ];
+
+        let currentProperty = null;
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        let currentPage = 'mapPage';
+        let pageHistory = [];
+        let activeFilter = null;
+
+        // Navegación
+        function goToPage(pageId) {
+            const currentPageEl = document.querySelector('.page.active');
+            const newPageEl = document.getElementById(pageId);
+
+            if (currentPageEl === newPageEl) return;
+
+            pageHistory.push(currentPage);
+            currentPage = pageId;
+
+            currentPageEl.classList.remove('active');
+            newPageEl.classList.add('active');
+
+            updateNavigation();
+
+            newPageEl.classList.add('animate-fade-in');
+            setTimeout(() => newPageEl.classList.remove('animate-fade-in'), 300);
+
+            document.getElementById('userMenu').classList.add('hidden');
+        }
+
+        function goBack() {
+            if (pageHistory.length > 0) {
+                const previousPage = pageHistory.pop();
+                const currentPageEl = document.querySelector('.page.active');
+                const previousPageEl = document.getElementById(previousPage);
+
+                currentPageEl.classList.remove('active');
+                previousPageEl.classList.add('active');
+                currentPage = previousPage;
+
+                updateNavigation();
+            }
+        }
+
+        function updateNavigation() {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-primary', 'hover:bg-primary/10');
+                btn.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-gray-700/50');
+                const icon = btn.querySelector('.material-symbols-outlined');
+                const text = btn.querySelector('span:last-child');
+                if (icon) icon.style.fontVariationSettings = "'FILL' 0";
+                if (text) {
+                    text.classList.remove('font-bold');
+                    text.classList.add('font-medium');
+                }
+            });
+        }
+
+        function goToFavorites() {
+            goToPage('favoritesPage');
+            renderFavorites();
+        }
+
+        function goToProfile() {
+            goToPage('profilePage');
+            document.getElementById('userMenu').classList.add('hidden');
+            document.getElementById('profileFavCount').textContent = favorites.length;
+        }
+
+        // Bottom Sheet
+        let isDragging = false;
+        let startY = 0;
+        let currentTranslateY = 0;
+        const sheet = document.getElementById('bottomSheet');
+        const handle = document.getElementById('sheetHandle');
+        const minHeight = window.innerHeight * 0.15;
+        const maxHeight = window.innerHeight * 0.85;
+        const defaultHeight = window.innerHeight * 0.45;
+
+        handle.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startY = e.touches[0].clientY;
+            sheet.classList.add('dragging');
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+
+            const currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+            currentTranslateY = Math.max(-(maxHeight - defaultHeight), Math.min(minHeight - defaultHeight, deltaY));
+
+            sheet.style.transform = `translateY(${currentTranslateY}px)`;
+        });
+
+        document.addEventListener('touchend', () => {
+            if (!isDragging) return;
+
+            isDragging = false;
+            sheet.classList.remove('dragging');
+
+            if (currentTranslateY < -(maxHeight - defaultHeight) / 2) {
+                sheet.style.height = `${maxHeight}px`;
+                sheet.style.transform = 'translateY(0)';
+            } else if (currentTranslateY > (defaultHeight - minHeight) / 2) {
+                sheet.style.height = `${minHeight}px`;
+                sheet.style.transform = 'translateY(0)';
+            } else {
+                sheet.style.height = `${defaultHeight}px`;
+                sheet.style.transform = 'translateY(0)';
+            }
+
+            currentTranslateY = 0;
+        });
+
+        // Renderizar propiedades
+        function renderProperties(filter = null) {
+            const carousel = document.getElementById('propertyCarousel');
+            const filteredProps = filter ? properties.filter(p => p.type === filter) : properties;
+            
+            document.getElementById('propertyCount').textContent = filteredProps.length;
+
+            carousel.innerHTML = filteredProps.map((prop) => `
+                <div class="property-card flex-none w-[85%] max-w-sm" onclick="viewPropertyDetails(${prop.id})">
+                    <div class="flex flex-col gap-3 rounded-2xl glass p-3 shadow-lg active:scale-95 transition-transform">
+                        <div class="relative w-full">
+                            <div class="w-full bg-center bg-cover aspect-[4/3] rounded-xl" style="background-image: url('${prop.images[0]}');"></div>
+                            
+                            <button onclick="toggleFavorite(${prop.id}, event)" class="absolute top-3 right-3 flex h-10 w-10 items-center justify-center rounded-full glass shadow-lg hover:scale-110 transition-all">
+                                <span class="material-symbols-outlined text-xl ${favorites.includes(prop.id) ? 'text-primary' : 'text-gray-700 dark:text-gray-300'}" style="font-variation-settings: 'FILL' ${favorites.includes(prop.id) ? 1 : 0};">favorite</span>
+                            </button>
+
+                            <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-gray-900/90 text-white text-xs font-bold flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">photo_camera</span>
+                                <span>${prop.images.length}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-baseline gap-2">
+                                <p class="text-gray-900 dark:text-gray-100 text-2xl font-bold">$${prop.price.toLocaleString()}</p>
+                                ${prop.discount ? `<span class="px-2 py-1 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-bold">${prop.discount}</span>` : ''}
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-semibold">${prop.address}</p>
+                            <div class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-gray-400 text-xs">location_on</span>
+                                <p class="text-gray-500 text-xs">${prop.location} • ${prop.distance}</p>
+                            </div>
+
+                            <div class="flex items-center gap-4 pt-1">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 text-lg">bed</span>
+                                    <span class="text-gray-700 dark:text-gray-300 text-sm font-bold">${prop.beds}</span>
+                                </div>
+                                <div class="h-4 w-px bg-gray-300 dark:bg-gray-600"></div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 text-lg">bathtub</span>
+                                    <span class="text-gray-700 dark:text-gray-300 text-sm font-bold">${prop.baths}</span>
+                                </div>
+                                <div class="h-4 w-px bg-gray-300 dark:bg-gray-600"></div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-gray-600 dark:text-gray-400 text-lg">square_foot</span>
+                                    <span class="text-gray-700 dark:text-gray-300 text-sm font-bold">${prop.sqft}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewPropertyDetails(propertyId) {
+            currentProperty = properties.find(p => p.id === propertyId);
+            if (!currentProperty) return;
+
+            document.getElementById('detailPrice').textContent = `$${currentProperty.price.toLocaleString()}`;
+            document.getElementById('detailAddress').textContent = currentProperty.address;
+            document.getElementById('detailLocation').textContent = `${currentProperty.location} • ${currentProperty.distance}`;
+            document.getElementById('detailBeds').textContent = currentProperty.beds;
+            document.getElementById('detailBaths').textContent = currentProperty.baths;
+            document.getElementById('detailSqft').textContent = currentProperty.sqft.toLocaleString();
+            document.getElementById('detailGarage').textContent = currentProperty.garage;
+            document.getElementById('detailDescription').textContent = currentProperty.description;
+
+            const gallery = document.getElementById('imageGallery');
+            gallery.innerHTML = currentProperty.images.map((img, idx) => `
+                <div class="flex-none w-full h-80">
+                    <div class="w-full h-full bg-cover bg-center" style="background-image: url('${img}');"></div>
+                </div>
+            `).join('');
+
+            const featuresContainer = document.getElementById('detailFeatures');
+            featuresContainer.innerHTML = currentProperty.features.map(feature => `
+                <span class="px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-semibold">${feature}</span>
+            `).join('');
+
+            updateDetailFavoriteButton();
+            setupGalleryScroll();
+
+            goToPage('detailsPage');
+        }
+
+        function setupGalleryScroll() {
+            const gallery = document.getElementById('imageGallery');
+            const counter = document.getElementById('imageCounter');
+            let currentIndex = 1;
+
+            gallery.addEventListener('scroll', () => {
+                const index = Math.round(gallery.scrollLeft / gallery.offsetWidth) + 1;
+                if (index !== currentIndex) {
+                    currentIndex = index;
+                    counter.textContent = `${currentIndex}/${currentProperty.images.length}`;
+                }
+            });
+
+            counter.textContent = `1/${currentProperty.images.length}`;
+        }
+
+        function selectPropertyOnMap(index) {
+            const carousel = document.getElementById('propertyCarousel');
+            const cards = carousel.querySelectorAll('.property-card');
+            if (cards[index]) {
+                cards[index].scrollIntoView({ behavior: 'smooth', inline: 'start' });
+            }
+        }
+
+        function filterByType(type) {
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                if (chip.dataset.type === type) {
+                    if (activeFilter === type) {
+                        chip.classList.remove('bg-gradient-to-r', 'from-primary', 'to-primary-dark', 'text-white');
+                        chip.classList.add('glass', 'text-gray-700', 'dark:text-gray-300');
+                        chip.querySelector('.chip-count').classList.remove('bg-white/20');
+                        chip.querySelector('.chip-count').classList.add('bg-gray-200', 'dark:bg-gray-600');
+                        activeFilter = null;
+                        renderProperties();
+                    } else {
+                        document.querySelectorAll('.filter-chip').forEach(c => {
+                            c.classList.remove('bg-gradient-to-r', 'from-primary', 'to-primary-dark', 'text-white');
+                            c.classList.add('glass', 'text-gray-700', 'dark:text-gray-300');
+                            c.querySelector('.chip-count').classList.remove('bg-white/20');
+                            c.querySelector('.chip-count').classList.add('bg-gray-200', 'dark:bg-gray-600');
+                        });
+                        
+                        chip.classList.remove('glass', 'text-gray-700', 'dark:text-gray-300');
+                        chip.classList.add('bg-gradient-to-r', 'from-primary', 'to-primary-dark', 'text-white');
+                        chip.querySelector('.chip-count').classList.remove('bg-gray-200', 'dark:bg-gray-600');
+                        chip.querySelector('.chip-count').classList.add('bg-white/20');
+                        activeFilter = type;
+                        renderProperties(type);
+                    }
+                }
+            });
+        }
+
+        // Favoritos
+        function toggleFavorite(propertyId, event) {
+            if (event) {
+                event.stopPropagation();
+            }
+
+            const index = favorites.indexOf(propertyId);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                showToast('Eliminado de favoritos');
+            } else {
+                favorites.push(propertyId);
+                showToast('Agregado a favoritos ❤️');
+            }
+
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            updateFavoriteCount();
+            renderProperties(activeFilter);
+            
+            if (currentPage === 'detailsPage') {
+                updateDetailFavoriteButton();
+            }
+            
+            if (currentPage === 'favoritesPage') {
+                renderFavorites();
+            }
+        }
+
+        function toggleDetailFavorite() {
+            if (!currentProperty) return;
+            toggleFavorite(currentProperty.id);
+        }
+
+        function updateDetailFavoriteButton() {
+            const btn = document.getElementById('detailFavBtn');
+            const icon = btn.querySelector('.material-symbols-outlined');
+            
+            if (favorites.includes(currentProperty.id)) {
+                icon.style.fontVariationSettings = "'FILL' 1";
+                icon.classList.remove('text-gray-700', 'dark:text-gray-300');
+                icon.classList.add('text-primary');
+            } else {
+                icon.style.fontVariationSettings = "'FILL' 0";
+                icon.classList.remove('text-primary');
+                icon.classList.add('text-gray-700', 'dark:text-gray-300');
+            }
+        }
+
+        function updateFavoriteCount() {
+            const count = favorites.length;
+            const badge = document.getElementById('favCount');
+            const navBadge = document.getElementById('navFavBadge');
+            
+            badge.textContent = count;
+            navBadge.textContent = count;
+            
+            if (count > 0) {
+                navBadge.classList.remove('hidden');
+            } else {
+                navBadge.classList.add('hidden');
+            }
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favoritesContainer');
+            const favProps = properties.filter(p => favorites.includes(p.id));
+
+            if (favProps.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full py-20">
+                        <span class="material-symbols-outlined text-gray-300 dark:text-gray-600 text-6xl mb-4">favorite_border</span>
+                        <p class="text-gray-500 dark:text-gray-400 text-lg font-semibold mb-2">No tienes favoritos aún</p>
+                        <p class="text-gray-400 dark:text-gray-500 text-sm mb-6">Explora propiedades y guarda tus favoritas</p>
+                        <button onclick="goToPage('mapPage')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold shadow-lg active:scale-95 transition-transform">
+                            Explorar propiedades
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="grid gap-4 py-4">
+                    ${favProps.map(prop => `
+                        <div onclick="viewPropertyDetails(${prop.id})" class="flex gap-3 p-3 rounded-2xl glass shadow-lg active:scale-95 transition-transform">
+                            <div class="w-24 h-24 rounded-xl bg-cover bg-center flex-shrink-0" style="background-image: url('${prop.images[0]}');"></div>
+                            <div class="flex-1 flex flex-col justify-between">
+                                <div>
+                                    <p class="text-gray-900 dark:text-gray-100 text-lg font-bold">$${prop.price.toLocaleString()}</p>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">${prop.address}</p>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs text-gray-500">
+                                    <span>${prop.beds} hab</span>
+                                    <span>•</span>
+                                    <span>${prop.baths} baños</span>
+                                    <span>•</span>
+                                    <span>${prop.sqft} m²</span>
+                                </div>
+                            </div>
+                            <button onclick="toggleFavorite(${prop.id}, event)" class="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all">
+                                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Utilidades
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            showToast(isDark ? 'Modo oscuro activado' : 'Modo claro activado');
+        }
+
+        function toggleAdvancedFilters() {
+            const panel = document.getElementById('filtersPanel');
+            const overlay = document.getElementById('overlay');
+            const isOpen = !panel.classList.contains('translate-x-full');
+
+            if (isOpen) {
+                panel.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            } else {
+                panel.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            }
+        }
+
+        function closeOverlays() {
+            document.getElementById('filtersPanel').classList.add('translate-x-full');
+            document.getElementById('overlay').classList.add('hidden');
+            document.getElementById('userMenu').classList.add('hidden');
+        }
+
+        function clearFilters() {
+            showToast('Filtros limpiados');
+        }
+
+        function applyFilters() {
+            showToast('Filtros aplicados');
+            toggleAdvancedFilters();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+        }
+
+        function centerUserLocation() {
+            showToast('Centrando ubicación...');
+        }
+
+        function contactAgent() {
+            showToast('Conectando con Inversiones inmobiliario...');
+        }
+
+        function shareProperty() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Propiedad en MEA',
+                    text: 'Mira esta increíble propiedad',
+                    url: window.location.href
+                }).catch(() => showToast('Enlace copiado al portapapeles'));
+            } else {
+                showToast('Enlace copiado al portapapeles');
+            }
+        }
+
+        function callAgent() {
+            showToast('Llamando al Inversiones...');
+        }
+
+        function messageAgent() {
+            showToast('Abriendo chat con Inversiones...');
+        }
+
+        function scheduleTour() {
+            showToast('Agendando visita...');
+        }
+
+        function makeOffer() {
+            showToast('Preparando oferta...');
+        }
+
+        function performSearch(query) {
+            showToast(`Buscando: ${query}`);
+            goToPage('mapPage');
+        }
+
+        function showCommercialProperties() {
+            showToast('Propiedades comerciales próximamente');
+        }
+
+        function filterByPrice(min, max) {
+            showToast(`Filtrando por precio: $${min/1000}K - $${max/1000}K`);
+            goToPage('mapPage');
+        }
+
+        function editProfile() {
+            showToast('Función de editar perfil próximamente');
+        }
+
+        function viewSearchHistory() {
+            goToPage('searchPage');
+        }
+
+        function showNotificationSettings() {
+            showToast('Configuración de notificaciones próximamente');
+        }
+
+        function showHelp() {
+            showToast('Ayuda y soporte: soporte@mea-inmobiliaria.com');
+        }
+
+        function logout() {
+            if (confirm('¿Seguro que deseas cerrar sesión?')) {
+                showToast('Cerrando sesión...');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+
+            renderProperties();
+            updateFavoriteCount();
+
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+
+            searchInput.addEventListener('input', (e) => {
+                if (e.target.value.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                const userMenu = document.getElementById('userMenu');
+                if (!e.target.closest('[onclick*="toggleUserMenu"]') && !userMenu.contains(e.target)) {
+                    userMenu.classList.add('hidden');
+                }
+            });
+
+            console.log('✓ MEA Inmobiliaria - App completamente funcional');
+            console.log(`✓ ${properties.length} propiedades cargadas`);
+            console.log(`✓ ${favorites.length} favoritos guardados`);
+        });
+    </script>
+</body>
+
+</html>

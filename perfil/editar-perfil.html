@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Editar Perfil - B&D</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21",
+                        "primary-light": "#F15A29"
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px) saturate(180%); }
+    </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button onclick="goBack()" class="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+                </button>
+                <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Editar Perfil</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="pt-20 pb-24 px-4 max-w-2xl mx-auto">
+        <form class="space-y-6" onsubmit="saveProfile(event)">
+            
+            <!-- Avatar -->
+            <div class="flex flex-col items-center mb-8">
+                <div class="relative">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white text-3xl font-black shadow-xl mb-3">
+                        JD
+                    </div>
+                    <button type="button" onclick="changeAvatar()" class="absolute bottom-2 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary-dark transition-all">
+                        <span class="material-symbols-outlined text-sm">edit</span>
+                    </button>
+                </div>
+                <p class="text-gray-500 text-xs mt-2">Toca para cambiar foto</p>
+            </div>
+
+            <!-- Nombre -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm">
+                <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Nombre completo</label>
+                <input type="text" value="John Doe" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-primary text-gray-900 dark:text-gray-100" />
+            </div>
+
+            <!-- Email -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm">
+                <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Email</label>
+                <input type="email" value="john.doe@email.com" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-primary text-gray-900 dark:text-gray-100" />
+            </div>
+
+            <!-- Teléfono -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm">
+                <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Teléfono</label>
+                <input type="tel" value="+52 123 456 7890" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-primary text-gray-900 dark:text-gray-100" />
+            </div>
+
+            <!-- Dirección -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm">
+                <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Dirección</label>
+                <textarea rows="3" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-primary text-gray-900 dark:text-gray-100 resize-none">Calle Principal 123, Ciudad</textarea>
+            </div>
+
+            <!-- Botón guardar -->
+            <div class="fixed bottom-0 left-0 right-0 p-4 glass border-t border-gray-200/50">
+                <button type="submit" class="w-full max-w-2xl mx-auto flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold shadow-lg hover:scale-105 transition-transform">
+                    <span class="material-symbols-outlined">save</span>
+                    <span>Guardar cambios</span>
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function changeAvatar() {
+            showToast('Selector de imagen próximamente');
+        }
+
+        function saveProfile(event) {
+            event.preventDefault();
+            showToast('✓ Perfil actualizado');
+            setTimeout(() => goBack(), 1500);
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full glass shadow-2xl text-gray-900 dark:text-gray-100 text-sm font-semibold z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
+
+</body>
+</html>
+

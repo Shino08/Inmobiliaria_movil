@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Agendar Visita - Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EA5B2B",
+                        "primary-dark": "#C74A21"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            overscroll-behavior: none;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            user-select: none;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+        }
+        
+        .dark .glass {
+            background: rgba(42, 42, 40, 0.95);
+        }
+        
+        .time-slot {
+            transition: all 0.2s ease;
+        }
+        
+        .time-slot.selected {
+            background: linear-gradient(135deg, #EA5B2B 0%, #C74A21 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body class="font-display bg-gray-50 dark:bg-gray-900">
+    
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 glass border-b border-gray-200/50 dark:border-gray-700/50 h-16">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700/50 hover:bg-gray-200 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back</span>
+            </button>
+            <h1 class="text-gray-900 dark:text-gray-100 text-lg font-bold">Agendar Visita</h1>
+        </div>
+    </header>
+    
+    <!-- Content -->
+    <div class="pt-20 pb-24 px-4 space-y-6">
+        
+        <!-- Property Card -->
+        <div class="rounded-2xl overflow-hidden bg-white dark:bg-gray-800 shadow-md">
+            <div class="h-48 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80');"></div>
+            <div class="p-4">
+                <p class="text-gray-900 dark:text-gray-100 text-2xl font-bold mb-1">$750,000</p>
+                <p class="text-gray-600 dark:text-gray-400 text-base font-semibold mb-1">123 Maple Street</p>
+                <div class="flex items-center gap-1.5 mb-3">
+                    <span class="material-symbols-outlined text-gray-400 text-sm">location_on</span>
+                    <p class="text-gray-500 text-sm">San Francisco, CA</p>
+                </div>
+                <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                    <span>🛏️ 3 hab</span>
+                    <span>🛁 2 baños</span>
+                    <span>📏 2,150 m²</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Calendar Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md">
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-4">Selecciona una fecha</h2>
+            
+            <!-- Month/Year Selector -->
+            <div class="flex items-center justify-between mb-4">
+                <button onclick="previousMonth()" class="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">chevron_left</span>
+                </button>
+                <p class="text-gray-900 dark:text-gray-100 text-base font-bold" id="currentMonth">Noviembre 2025</p>
+                <button onclick="nextMonth()" class="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">chevron_right</span>
+                </button>
+            </div>
+            
+            <!-- Calendar Grid -->
+            <div class="grid grid-cols-7 gap-2 mb-4">
+                <div class="text-center text-gray-500 text-xs font-semibold py-2">Dom</div>
+                <div class="text-center text-gray-500 text-xs font-semibold py-2">Lun</div>
+                <div class="text-center text-gray-500 text-xs font-semibold py-2">Mar</div>
+                <div class="text-center text-gray-500 text-xs font-semibold py-2">Mié</div>
+                <div class="text-center text-gray-500 text-xs font-semibold py-2">Jue</div>
+                <div class="text-center text-gray-500 text-xs font-semibold py-2">Vie</div>
+                <div class="text-center text-gray-500 text-xs font-semibold py-2">Sáb</div>
+                
+                <!-- Empty cells for alignment -->
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                
+                <!-- Days -->
+                <button class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 text-sm">1</button>
+                <button class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 text-sm">2</button>
+                
+                <!-- Available days -->
+                <button onclick="selectDate(this, 3)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">3</button>
+                <button onclick="selectDate(this, 4)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">4</button>
+                <button onclick="selectDate(this, 5)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">5</button>
+                <button onclick="selectDate(this, 6)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">6</button>
+                <button onclick="selectDate(this, 7)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">7</button>
+                <button onclick="selectDate(this, 8)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">8</button>
+                <button onclick="selectDate(this, 9)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">9</button>
+                <button onclick="selectDate(this, 10)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">10</button>
+                <button onclick="selectDate(this, 11)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">11</button>
+                <button onclick="selectDate(this, 12)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">12</button>
+                <button onclick="selectDate(this, 13)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">13</button>
+                <button onclick="selectDate(this, 14)" class="aspect-square rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium">14</button>
+            </div>
+        </div>
+        
+        <!-- Time Slots -->
+        <div id="timeSlots" class="hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md">
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-4">Horarios disponibles</h2>
+            
+            <div class="grid grid-cols-3 gap-3">
+                <button onclick="selectTime(this)" class="time-slot px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">09:00 AM</button>
+                <button onclick="selectTime(this)" class="time-slot px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">10:00 AM</button>
+                <button onclick="selectTime(this)" class="time-slot px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">11:00 AM</button>
+                <button onclick="selectTime(this)" class="time-slot px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">02:00 PM</button>
+                <button onclick="selectTime(this)" class="time-slot px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">03:00 PM</button>
+                <button onclick="selectTime(this)" class="time-slot px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">04:00 PM</button>
+            </div>
+        </div>
+        
+        <!-- Additional Info -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md">
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-4">Información adicional</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2 block">Nombre completo</label>
+                    <input type="text" placeholder="Tu nombre" class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                
+                <div>
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2 block">Teléfono</label>
+                    <input type="tel" placeholder="+1 (555) 000-0000" class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
+                
+                <div>
+                    <label class="text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2 block">Comentarios (opcional)</label>
+                    <textarea rows="3" placeholder="¿Algo que quieras que sepamos?" class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Bottom CTA -->
+    <div class="fixed bottom-0 left-0 right-0 p-4 glass border-t border-gray-200/50 dark:border-gray-700/50 z-50">
+        <button onclick="confirmVisit()" class="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-primary-dark text-white text-base font-bold shadow-lg hover:scale-105 active:scale-95 transition-all">
+            Confirmar Visita
+        </button>
+    </div>
+    
+    <script>
+        let selectedDate = null;
+        let selectedTime = null;
+        
+        function goBack() {
+            window.history.back();
+        }
+        
+        function previousMonth() {
+            alert('Mes anterior');
+        }
+        
+        function nextMonth() {
+            alert('Mes siguiente');
+        }
+        
+        function selectDate(element, day) {
+            // Remove previous selection
+            document.querySelectorAll('.grid button[onclick^="selectDate"]').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white');
+            });
+            
+            // Add selection to clicked date
+            element.classList.add('bg-primary', 'text-white');
+            selectedDate = day;
+            
+            // Show time slots
+            document.getElementById('timeSlots').classList.remove('hidden');
+        }
+        
+        function selectTime(element) {
+            // Remove previous selection
+            document.querySelectorAll('.time-slot').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selection
+            element.classList.add('selected');
+            selectedTime = element.textContent;
+        }
+        
+        function confirmVisit() {
+            if (!selectedDate || !selectedTime) {
+                alert('Por favor selecciona una fecha y hora');
+                return;
+            }
+            
+            alert(`Visita confirmada para el ${selectedDate} de Noviembre a las ${selectedTime}`);
+            window.history.back();
+        }
+    </script>
+    
+</body>
+</html>
