@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      name="viewport"
+    />
+    <title>Navegación - Inmobiliaria Móvil</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#EA5B2B",
+              "primary-dark": "#C74A21",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      * {
+        -webkit-tap-highlight-color: transparent;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        user-select: none;
+      }
+
+      .glass {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+      }
+
+      .dark .glass {
+        background: rgba(42, 42, 40, 0.95);
+      }
+
+      .nav-link {
+        transition: all 0.2s ease;
+      }
+
+      .nav-link:hover {
+        transform: translateX(4px);
+      }
+
+      .category-card {
+        transition: all 0.3s ease;
+      }
+
+      .category-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(234, 91, 43, 0.2);
+      }
+    </style>
+  </head>
+
+  <body class="font-display bg-gray-50 dark:bg-gray-900">
+    <!-- Header -->
+    <header
+      class="sticky top-0 z-50 glass border-b border-gray-200 dark:border-gray-700"
+    >
+      <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div
+              class="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-lg"
+            >
+              <span class="material-symbols-outlined text-white text-xl"
+                >home</span
+              >
+            </div>
+            <div>
+              <h1 class="text-gray-900 dark:text-gray-100 text-xl font-bold">
+                Navegación de Vistas
+              </h1>
+              <p class="text-gray-500 dark:text-gray-400 text-xs">
+                35 vistas disponibles
+              </p>
+            </div>
+          </div>
+          <button
+            onclick="toggleDarkMode()"
+            class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all active:scale-95"
+          >
+            <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+            <span class="material-symbols-outlined hidden dark:inline"
+              >light_mode</span
+            >
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <!-- Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div
+          class="p-4 rounded-2xl glass border border-gray-200 dark:border-gray-700 text-center"
+        >
+          <p class="text-3xl font-bold text-primary mb-1">35</p>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">Vistas Totales</p>
+        </div>
+        <div
+          class="p-4 rounded-2xl glass border border-gray-200 dark:border-gray-700 text-center"
+        >
+          <p class="text-3xl font-bold text-primary mb-1">9</p>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">Categorías</p>
+        </div>
+        <div
+          class="p-4 rounded-2xl glass border border-gray-200 dark:border-gray-700 text-center"
+        >
+          <p class="text-3xl font-bold text-primary mb-1">100%</p>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">Navegable</p>
+        </div>
+        <div
+          class="p-4 rounded-2xl glass border border-gray-200 dark:border-gray-700 text-center"
+        >
+          <p class="text-3xl font-bold text-primary mb-1">✓</p>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">Responsive</p>
+        </div>
+      </div>
+
+      <!-- 🔐 Autenticación -->
+      <div
+        class="category-card mb-6 p-6 rounded-2xl glass border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="h-12 w-12 rounded-xl bg-red-500/10 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-red-500 text-2xl"
+              >lock</span
+            >
+          </div>
+          <div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              🔐 Autenticación
+            </h2>
+            <p class="text-gray-500 text-sm">2 vistas</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <a
+            href="autenticacion/login.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">login</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Inicio de Sesión
+              </p>
+              <p class="text-gray-500 text-xs">login.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="autenticacion/registro.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >person_add</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Registro
+              </p>
+              <p class="text-gray-500 text-xs">registro.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+
+      <!-- 🏠 Inicio -->
+      <div
+        class="category-card mb-6 p-6 rounded-2xl glass border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-blue-500 text-2xl"
+              >home</span
+            >
+          </div>
+          <div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              🏠 Inicio
+            </h2>
+            <p class="text-gray-500 text-sm">3 vistas</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3">
+          <a
+            href="inicio/index.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >home_app_logo</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Página de Entrada
+              </p>
+              <p class="text-gray-500 text-xs">index.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="inicio/home.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">map</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Home Principal
+              </p>
+              <p class="text-gray-500 text-xs">home.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="inicio/inmobiliaria.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">business</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Inmobiliaria
+              </p>
+              <p class="text-gray-500 text-xs">inmobiliaria.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+
+      <!-- 🏘️ Propiedades -->
+      <div
+        class="category-card mb-6 p-6 rounded-2xl glass border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="h-12 w-12 rounded-xl bg-green-500/10 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-green-500 text-2xl"
+              >apartment</span
+            >
+          </div>
+          <div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              🏘️ Propiedades
+            </h2>
+            <p class="text-gray-500 text-sm">9 vistas</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3">
+          <a
+            href="propiedades/busqueda.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">search</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Búsqueda
+              </p>
+              <p class="text-gray-500 text-xs">busqueda.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="propiedades/filtros.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">tune</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Filtros
+              </p>
+              <p class="text-gray-500 text-xs">filtros.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="propiedades/resultados.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">list</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Resultados
+              </p>
+              <p class="text-gray-500 text-xs">resultados.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="propiedades/detalles.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">info</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Detalles
+              </p>
+              <p class="text-gray-500 text-xs">detalles.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="propiedades/favoritos.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">favorite</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Favoritos
+              </p>
+              <p class="text-gray-500 text-xs">favoritos.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="propiedades/comparar.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >compare_arrows</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Comparar
+              </p>
+              <p class="text-gray-500 text-xs">comparar.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="propiedades/tour-virtual.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">360</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Tour Virtual
+              </p>
+              <p class="text-gray-500 text-xs">tour-virtual.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="propiedades/galeria.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >photo_library</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Galería
+              </p>
+              <p class="text-gray-500 text-xs">galeria.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="propiedades/calculadora.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >calculate</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Calculadora
+              </p>
+              <p class="text-gray-500 text-xs">calculadora.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+
+      <!-- 📅 Visitas y Ofertas -->
+      <div
+        class="category-card mb-6 p-6 rounded-2xl glass border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="h-12 w-12 rounded-xl bg-purple-500/10 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-purple-500 text-2xl"
+              >event</span
+            >
+          </div>
+          <div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              📅 Visitas y Ofertas
+            </h2>
+            <p class="text-gray-500 text-sm">5 vistas</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3">
+          <a
+            href="visitas-ofertas/agendar-visita.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >calendar_add_on</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Agendar Visita
+              </p>
+              <p class="text-gray-500 text-xs">agendar-visita.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="visitas-ofertas/mis-visitas.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >event_note</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Mis Visitas
+              </p>
+              <p class="text-gray-500 text-xs">mis-visitas.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="visitas-ofertas/historial-visitas.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">history</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Historial de Visitas
+              </p>
+              <p class="text-gray-500 text-xs">historial-visitas.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="visitas-ofertas/hacer-oferta.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >request_quote</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Hacer Oferta
+              </p>
+              <p class="text-gray-500 text-xs">hacer-oferta.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="visitas-ofertas/mis-ofertas.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >description</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Mis Ofertas
+              </p>
+              <p class="text-gray-500 text-xs">mis-ofertas.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+
+      <!-- 💰 Inversiones -->
+      <div
+        class="category-card mb-6 p-6 rounded-2xl glass border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="h-12 w-12 rounded-xl bg-yellow-500/10 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-yellow-600 text-2xl"
+              >trending_up</span
+            >
+          </div>
+          <div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              💰 Inversiones
+            </h2>
+            <p class="text-gray-500 text-sm">4 vistas</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <a
+            href="inversiones/oportunidades.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >lightbulb</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Oportunidades
+              </p>
+              <p class="text-gray-500 text-xs">oportunidades.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="inversiones/detalles-inversion.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >analytics</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Detalles de Inversión
+              </p>
+              <p class="text-gray-500 text-xs">detalles-inversion.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="inversiones/detalles-adicionales.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">article</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Detalles Adicionales
+              </p>
+              <p class="text-gray-500 text-xs">detalles-adicionales.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="inversiones/confirmacion.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >check_circle</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Confirmación
+              </p>
+              <p class="text-gray-500 text-xs">confirmacion.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+
+      <!-- 👤 Perfil -->
+      <div
+        class="category-card mb-6 p-6 rounded-2xl glass border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="h-12 w-12 rounded-xl bg-indigo-500/10 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-indigo-500 text-2xl"
+              >person</span
+            >
+          </div>
+          <div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              👤 Perfil
+            </h2>
+            <p class="text-gray-500 text-sm">4 vistas</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <a
+            href="perfil/mi-perfil.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >account_circle</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Mi Perfil
+              </p>
+              <p class="text-gray-500 text-xs">mi-perfil.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="perfil/editar-perfil.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">edit</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Editar Perfil
+              </p>
+              <p class="text-gray-500 text-xs">editar-perfil.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="perfil/chat.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">chat</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Chat
+              </p>
+              <p class="text-gray-500 text-xs">chat.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="perfil/mensajes.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">mail</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Mensajes
+              </p>
+              <p class="text-gray-500 text-xs">mensajes.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+
+      <!-- ⚙️ Configuración -->
+      <div
+        class="category-card mb-6 p-6 rounded-2xl glass border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="h-12 w-12 rounded-xl bg-gray-500/10 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-gray-600 text-2xl"
+              >settings</span
+            >
+          </div>
+          <div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              ⚙️ Configuración
+            </h2>
+            <p class="text-gray-500 text-sm">4 vistas</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <a
+            href="configuracion/ajustes.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">tune</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Ajustes
+              </p>
+              <p class="text-gray-500 text-xs">ajustes.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="configuracion/idioma.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">language</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Idioma
+              </p>
+              <p class="text-gray-500 text-xs">idioma.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="configuracion/seguridad.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary">shield</span>
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Seguridad
+              </p>
+              <p class="text-gray-500 text-xs">seguridad.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="configuracion/notificaciones.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >notifications</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Notificaciones
+              </p>
+              <p class="text-gray-500 text-xs">notificaciones.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+
+      <!-- 🆘 Soporte -->
+      <div
+        class="category-card mb-6 p-6 rounded-2xl glass border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="h-12 w-12 rounded-xl bg-orange-500/10 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-orange-500 text-2xl"
+              >support_agent</span
+            >
+          </div>
+          <div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              🆘 Soporte
+            </h2>
+            <p class="text-gray-500 text-sm">3 vistas</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3">
+          <a
+            href="soporte/centro-notificaciones.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >notifications_active</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Centro de Notificaciones
+              </p>
+              <p class="text-gray-500 text-xs">centro-notificaciones.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="soporte/centro-ayuda.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >help_center</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Centro de Ayuda
+              </p>
+              <p class="text-gray-500 text-xs">centro-ayuda.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+          <a
+            href="soporte/atencion-cliente.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >contact_support</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Atención al Cliente
+              </p>
+              <p class="text-gray-500 text-xs">atencion-cliente.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+
+      <!-- 🎓 Onboarding -->
+      <div
+        class="category-card mb-6 p-6 rounded-2xl glass border border-gray-200 dark:border-gray-700"
+      >
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="h-12 w-12 rounded-xl bg-pink-500/10 flex items-center justify-center"
+          >
+            <span class="material-symbols-outlined text-pink-500 text-2xl"
+              >school</span
+            >
+          </div>
+          <div>
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold">
+              🎓 Onboarding
+            </h2>
+            <p class="text-gray-500 text-sm">1 vista</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-1 gap-3">
+          <a
+            href="onboarding/tutorial.html"
+            class="nav-link flex items-center gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >slideshow</span
+            >
+            <div class="flex-1">
+              <p class="text-gray-900 dark:text-gray-100 font-semibold text-sm">
+                Tutorial
+              </p>
+              <p class="text-gray-500 text-xs">tutorial.html</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-sm"
+              >arrow_forward</span
+            >
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass border-t border-gray-200 dark:border-gray-700 mt-12">
+      <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="text-center">
+          <p class="text-gray-600 dark:text-gray-400 text-sm">
+            <strong>Inmobiliaria Móvil</strong> • 35 Vistas Navegables
+          </p>
+          <p class="text-gray-500 text-xs mt-1">
+            Todas las vistas están vinculadas con etiquetas &lt;a&gt; para
+            navegación completa
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Dark mode toggle
+      function toggleDarkMode() {
+        document.documentElement.classList.toggle("dark");
+        localStorage.setItem(
+          "darkMode",
+          document.documentElement.classList.contains("dark")
+        );
+      }
+
+      // Load dark mode preference
+      if (localStorage.getItem("darkMode") === "true") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+  </body>
+</html>
